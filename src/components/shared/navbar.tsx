@@ -55,7 +55,10 @@ function Navbar() {
             </Link>
 
             <div className="flex items-center gap-2 md:gap-4">
-              <nav aria-label="Main" className="hidden items-center gap-4 md:flex lg:gap-5">
+              <nav
+                aria-label="Main"
+                className="hidden items-center gap-4 md:flex lg:gap-5"
+              >
                 {NAV_LINKS.map((link) => (
                   <Link
                     key={link.href}
@@ -67,7 +70,7 @@ function Navbar() {
                 ))}
                 <span aria-hidden="true" className="h-4 w-px bg-border" />
                 <Link
-                  href="/signin"
+                  href="/sign-in"
                   className="text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
                 >
                   Sign In
@@ -76,7 +79,7 @@ function Navbar() {
 
               <Button
                 nativeButton={false}
-                render={<Link href="/signup" />}
+                render={<Link href="/sign-up" />}
                 className="hidden bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 md:inline-flex"
               >
                 Get Started
@@ -127,7 +130,7 @@ function Navbar() {
                   <Button
                     variant="outline"
                     nativeButton={false}
-                    render={<Link href="/signin" />}
+                    render={<Link href="/sign-in" />}
                     onClick={() => setMenuOpen(false)}
                     className="flex-1"
                   >
@@ -135,7 +138,7 @@ function Navbar() {
                   </Button>
                   <Button
                     nativeButton={false}
-                    render={<Link href="/signup" />}
+                    render={<Link href="/sign-up" />}
                     onClick={() => setMenuOpen(false)}
                     className="flex-1 bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400"
                   >
