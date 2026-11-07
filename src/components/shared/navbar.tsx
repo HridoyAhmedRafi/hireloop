@@ -66,9 +66,7 @@ function Navbar() {
                 <span aria-hidden="true" className="h-4 w-px bg-border" />
               </nav>
 
-              <SessionButton view="desktop" />
-
-              <SessionButton view="mobile-bar" />
+              <SessionButton />
 
               <Button
                 variant="ghost"
@@ -112,7 +110,7 @@ function Navbar() {
                 ))}
                 <div className="my-1 h-px bg-border" />
                 <div onClick={() => setMenuOpen(false)}>
-                  <SessionButton view="mobile-menu" />
+                  <SessionButton variant="menu" />
                 </div>
               </nav>
             )}
