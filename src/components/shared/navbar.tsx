@@ -6,6 +6,7 @@ import { useState } from "react";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
+import { SessionButton } from "@/components/session-button/SessionButton";
 import logo from "@/assets/logo.png";
 
 const NAV_LINKS = [
@@ -14,21 +15,15 @@ const NAV_LINKS = [
   { label: "Pricing", href: "/pricing" },
 ] as const;
 
-// Theme state lives in next-themes (see theme-provider.tsx). The icons below
-// follow the .dark class on <html> via CSS, so nothing here reads the theme
-// during render — no hydration mismatch.
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
-
   const toggleTheme = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
 
   return (
     <>
-      {/* Click-away layer lives outside <header>: its backdrop-blur would
-          otherwise become the containing block and shrink this overlay. */}
       {menuOpen && (
         <div
           className="fixed inset-0 z-40"
@@ -69,21 +64,11 @@ function Navbar() {
                   </Link>
                 ))}
                 <span aria-hidden="true" className="h-4 w-px bg-border" />
-                <Link
-                  href="/sign-in"
-                  className="text-sm font-medium text-indigo-600 transition-colors hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
-                >
-                  Sign In
-                </Link>
               </nav>
 
-              <Button
-                nativeButton={false}
-                render={<Link href="/sign-up" />}
-                className="hidden bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400 md:inline-flex"
-              >
-                Get Started
-              </Button>
+              <SessionButton view="desktop" />
+
+              <SessionButton view="mobile-bar" />
 
               <Button
                 variant="ghost"
@@ -126,24 +111,8 @@ function Navbar() {
                   </Link>
                 ))}
                 <div className="my-1 h-px bg-border" />
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    nativeButton={false}
-                    render={<Link href="/sign-in" />}
-                    onClick={() => setMenuOpen(false)}
-                    className="flex-1"
-                  >
-                    Sign In
-                  </Button>
-                  <Button
-                    nativeButton={false}
-                    render={<Link href="/sign-up" />}
-                    onClick={() => setMenuOpen(false)}
-                    className="flex-1 bg-indigo-600 text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400"
-                  >
-                    Get Started
-                  </Button>
+                <div onClick={() => setMenuOpen(false)}>
+                  <SessionButton view="mobile-menu" />
                 </div>
               </nav>
             )}

@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Eye, EyeOff, UserPlus } from "lucide-react";
+import {
+  Briefcase,
+  Eye,
+  EyeOff,
+  ShieldCheck,
+  UserPlus,
+  UserRound,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,28 +22,51 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
+import { cn } from "cn";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+
+const ROLES = [
+  {
+    value: "seeker",
+    label: "Seeker",
+    icon: UserRound,
+  },
+  {
+    value: "recruiter",
+    label: "Recruiter",
+    icon: Briefcase,
+  },
+  {
+    value: "admin",
+    label: "Admin",
+    icon: ShieldCheck,
+  },
+] as const;
+
+type Role = (typeof ROLES)[number]["value"];
 
 export default function SignUpPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [role, setRole] = useState<Role>("seeker");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-    const user = Object.fromEntries(formData.entries()) as {
-      name: string;
-      email: string;
-      image: string;
-      password: string;
-    };
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const image = formData.get("image") as string;
+    const password = formData.get("password") as string;
 
-    console.log("Sign Up Data:", user);
     try {
       const { data, error } = await authClient.signUp.email({
-        ...user,
+        name,
+        email,
+        image,
+        password,
+        role,
       });
       if (error) {
         toast.error(error.message as string);
@@ -70,6 +100,46 @@ export default function SignUpPage() {
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
+            <fieldset className="space-y-2">
+              <legend className="text-sm font-medium">
+                I&apos;m signing up as
+              </legend>
+
+              <div className="grid grid-cols-3 gap-2">
+                {ROLES.map(({ value, label, icon: Icon }) => (
+                  <label
+                    key={value}
+                    className={cn(
+                      "flex cursor-pointer flex-col items-center gap-1 rounded-lg border p-3 text-center transition-colors",
+                      role === value
+                        ? "border-primary bg-primary/10 ring-2 ring-primary"
+                        : "border-border hover:bg-muted",
+                    )}
+                  >
+                    <input
+                      type="radio"
+                      name="role"
+                      value={value}
+                      checked={role === value}
+                      onChange={() => setRole(value)}
+                      className="sr-only"
+                    />
+
+                    <Icon
+                      className={cn(
+                        "size-5",
+                        role === value
+                          ? "text-primary"
+                          : "text-muted-foreground",
+                      )}
+                    />
+
+                    <span className="text-sm font-medium">{label}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
             <div className="space-y-2">
               <Label htmlFor="name">Username</Label>
               <Input
