@@ -14,23 +14,41 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
-
-    const userData = {
-      name: formData.get("name"),
-      email: formData.get("email"),
-      imageUrl: formData.get("imageUrl"),
-      password: formData.get("password"),
+    const user = Object.fromEntries(formData.entries()) as {
+      name: string;
+      email: string;
+      image: string;
+      password: string;
     };
 
-    console.log("Sign Up Data:", userData);
+    console.log("Sign Up Data:", user);
+    try {
+      const { data, error } = await authClient.signUp.email({
+        ...user,
+      });
+      if (error) {
+        toast.error(error.message as string);
+      }
+      if (data) {
+        toast.success("Account created successfully!");
+        router.push("/sign-in"); // Redirect to sign-in page after successful sign-up
+      }
+    } catch (error) {
+      console.error("Something went wrong:", error);
+      toast.error("An error occurred while creating your account.");
+    }
   };
 
   return (
@@ -74,10 +92,10 @@ export default function SignUpPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="imageUrl">Profile image URL</Label>
+              <Label htmlFor="image">Profile image URL</Label>
               <Input
-                id="imageUrl"
-                name="imageUrl"
+                id="image"
+                name="image"
                 type="url"
                 placeholder="https://example.com/image.jpg"
                 required
