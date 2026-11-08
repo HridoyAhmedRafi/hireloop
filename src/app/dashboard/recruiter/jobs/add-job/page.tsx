@@ -22,6 +22,8 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { AddJob } from "@/lib/actions/jobs";
+import { IJob } from "@/lib/job-type";
 
 const JOB_TYPES = ["Full-time", "Part-time", "Contract", "Internship"];
 
@@ -39,17 +41,29 @@ const CATEGORIES = [
 
 const FREQUENCIES = ["per hour", "per month", "per year"];
 
-const AddJob = () => {
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+const AddJobPage = () => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
-    const job = {
-      ...Object.fromEntries(formData.entries()),
+    const job: IJob = {
+      title: String(formData.get("title") ?? ""),
+      company: String(formData.get("company") ?? ""),
+      category: String(formData.get("category") ?? ""),
+      jobType: String(formData.get("jobType") ?? ""),
       remote: formData.get("remote") === "on",
+      location: String(formData.get("location") ?? ""),
+      deadline: String(formData.get("deadline") ?? ""),
+      minSalary: String(formData.get("minSalary") ?? ""),
+      maxSalary: String(formData.get("maxSalary") ?? ""),
+      frequency: String(formData.get("frequency") ?? ""),
+      responsibilities: String(formData.get("responsibilities") ?? ""),
+      requirements: String(formData.get("requirements") ?? ""),
     };
 
-    console.log("New job:", job);
+    const result = await AddJob(job);
+
+    console.log("New job:", result);
   };
 
   return (
@@ -272,4 +286,4 @@ const AddJob = () => {
   );
 };
 
-export default AddJob;
+export default AddJobPage;
