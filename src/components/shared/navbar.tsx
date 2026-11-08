@@ -7,6 +7,7 @@ import { Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { SessionButton } from "@/components/session-button/SessionButton";
+import { useSession } from "@/lib/auth-client";
 import logo from "@/assets/logo.png";
 
 const NAV_LINKS = [
@@ -17,6 +18,9 @@ const NAV_LINKS = [
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { data: session } = useSession();
+  const user = session?.user;
+
   const { resolvedTheme, setTheme } = useTheme();
   const toggleTheme = () => {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
@@ -67,6 +71,15 @@ function Navbar() {
               </nav>
 
               <SessionButton />
+
+              {user ? (
+                <Link
+                  href={`dashboard/${user?.role}`}
+                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  Dashboard
+                </Link>
+              ) : null}
 
               <Button
                 variant="ghost"

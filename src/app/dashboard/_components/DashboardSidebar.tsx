@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Sidebar,
   SidebarContent,
@@ -18,10 +19,12 @@ import {
   Building2,
   FileText,
   LayoutDashboard,
+  PlusCircle,
   Settings,
   Users,
   Wallet,
 } from "lucide-react";
+import Link from "next/link";
 
 type Role = "seeker" | "recruiter" | "admin";
 
@@ -83,6 +86,12 @@ const menuItemByRole: Record<Role, MenuItem[]> = {
       name: "Manage Jobs",
       url: "/dashboard/recruiter/jobs",
       icon: Briefcase,
+    },
+    {
+      _id: "recruiter-add-job",
+      name: "Add Job",
+      url: "/dashboard/recruiter/jobs/add-job",
+      icon: PlusCircle,
     },
     {
       _id: "recruiter-applications",
@@ -150,9 +159,12 @@ export function DashboardSidebar() {
         <SidebarGroup />
         <SidebarGroup>
           <SidebarMenu>
+            <Link href={"/"}>
+              <Button className="cursor-pointer mb-4">Home</Button>
+            </Link>
             {menuItems.map((item) => (
               <SidebarMenuItem key={item._id}>
-                <SidebarMenuButton render={<a href={item.url} />}>
+                <SidebarMenuButton render={<Link href={item.url} />}>
                   <item.icon />
                   <span>{item.name}</span>
                 </SidebarMenuButton>
