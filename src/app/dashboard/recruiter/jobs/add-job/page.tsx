@@ -1,6 +1,12 @@
 "use client";
 
-import { Plus } from "lucide-react";
+import {
+  Building2,
+  DollarSign,
+  Globe,
+  MapPin,
+  Plus,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -41,6 +47,22 @@ const CATEGORIES = [
 
 const FREQUENCIES = ["per hour", "per month", "per year"];
 
+// Figma palette (Add New Job / 83482:812)
+const FIGMA_THEME =
+  "[--background:#131314] [--foreground:#f4f4f5] [--card:#151516] [--card-foreground:#f4f4f5] [--popover:#151516] [--popover-foreground:#f4f4f5] [--primary:#5c53fe] [--primary-foreground:#ffffff] [--secondary:#232327] [--secondary-foreground:#f4f4f5] [--muted:#232327] [--muted-foreground:#a0a0ab] [--accent:#232327] [--accent-foreground:#f4f4f5] [--border:#232327] [--input:#232327] [--ring:#5c53fe]";
+
+const inputClass =
+  "border-input bg-[#1e1e21] text-[#f4f4f5] placeholder:text-[#5a5a60] dark:bg-[#1e1e21]";
+
+const textareaClass =
+  "min-h-28 rounded-xl border-input bg-[#1e1e21] px-3 py-2.5 text-[#f4f4f5] placeholder:text-[#5a5a60] dark:bg-[#1e1e21]";
+
+const selectClass =
+  "w-full border-input bg-[#1e1e21] text-[#f4f4f5] dark:bg-[#1e1e21] dark:hover:bg-[#232327]";
+
+const fieldIconClass =
+  "pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-[#a0a0ab]";
+
 const AddJobPage = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -67,7 +89,9 @@ const AddJobPage = () => {
   };
 
   return (
-    <div className="flex w-full flex-1 flex-col p-4 md:p-8">
+    <div
+      className={`flex w-full flex-1 flex-col p-4 md:p-8 ${FIGMA_THEME}`}
+    >
       <form
         onSubmit={handleSubmit}
         className="m-auto w-full max-w-4xl space-y-6"
@@ -103,6 +127,7 @@ const AddJobPage = () => {
                 id="title"
                 name="title"
                 placeholder="Frontend Developer"
+                className={inputClass}
                 required
               />
             </div>
@@ -110,12 +135,16 @@ const AddJobPage = () => {
             <div className="grid gap-4 md:grid-cols-2">
               <div className="grid gap-2">
                 <Label htmlFor="company">Company Name *</Label>
-                <Input
-                  id="company"
-                  name="company"
-                  placeholder="HirePulse Network"
-                  required
-                />
+                <div className="relative">
+                  <Input
+                    id="company"
+                    name="company"
+                    placeholder="HirePulse Network"
+                    className={`${inputClass} pr-9`}
+                    required
+                  />
+                  <Building2 className={fieldIconClass} />
+                </div>
               </div>
 
               <div className="grid gap-2">
@@ -125,7 +154,10 @@ const AddJobPage = () => {
                   required
                   defaultValue="Engineering & Tech"
                 >
-                  <SelectTrigger id="category" className="w-full">
+                  <SelectTrigger
+                    id="category"
+                    className={selectClass}
+                  >
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -151,7 +183,7 @@ const AddJobPage = () => {
                   <Label
                     key={type}
                     htmlFor={`job-type-${type}`}
-                    className="h-10 cursor-pointer justify-center rounded-lg border border-input px-3 font-normal transition-colors hover:bg-muted has-[[data-checked]]:border-primary has-[[data-checked]]:bg-primary/10"
+                    className="h-10 cursor-pointer justify-center rounded-lg border border-[#232327] bg-[#1e1e21] px-3 font-normal text-[#a0a0ab] transition-colors hover:bg-[#232327] has-[[data-checked]]:border-primary has-[[data-checked]]:bg-[#232327] has-[[data-checked]]:text-white"
                   >
                     <RadioGroupItem
                       id={`job-type-${type}`}
@@ -175,12 +207,17 @@ const AddJobPage = () => {
           </CardHeader>
 
           <CardContent className="grid gap-4">
-            <div className="flex items-center justify-between gap-4 rounded-lg border border-input p-3">
-              <div className="grid gap-1">
-                <Label htmlFor="remote">Remote Work Allowed</Label>
-                <p className="text-xs text-muted-foreground">
-                  Enable worldwide or distributed candidate applications.
-                </p>
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-[#232327] bg-[#1e1e21] p-3">
+              <div className="flex items-center gap-3">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#232327] text-[#c3c0ff]">
+                  <Globe className="size-4" />
+                </span>
+                <div className="grid gap-1">
+                  <Label htmlFor="remote">Remote Work Allowed</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Enable worldwide or distributed candidate applications.
+                  </p>
+                </div>
               </div>
               <Switch id="remote" name="remote" />
             </div>
@@ -188,47 +225,67 @@ const AddJobPage = () => {
             <div className="grid gap-4 md:grid-cols-2">
               <div className="grid gap-2">
                 <Label htmlFor="location">Job Location *</Label>
-                <Input
-                  id="location"
-                  name="location"
-                  placeholder="New York, USA"
-                  required
-                />
+                <div className="relative">
+                  <Input
+                    id="location"
+                    name="location"
+                    placeholder="New York, USA"
+                    className={`${inputClass} pr-9`}
+                    required
+                  />
+                  <MapPin className={fieldIconClass} />
+                </div>
               </div>
 
               <div className="grid gap-2">
                 <Label htmlFor="deadline">Application Deadline</Label>
-                <Input id="deadline" name="deadline" type="date" />
+                <Input
+                  id="deadline"
+                  name="deadline"
+                  type="date"
+                  className={inputClass}
+                />
               </div>
             </div>
 
             <div className="grid gap-4 md:grid-cols-3">
               <div className="grid gap-2">
                 <Label htmlFor="minSalary">Min Salary / Rate</Label>
-                <Input
-                  id="minSalary"
-                  name="minSalary"
-                  type="number"
-                  min="0"
-                  placeholder="25"
-                />
+                <div className="relative">
+                  <Input
+                    id="minSalary"
+                    name="minSalary"
+                    type="number"
+                    min="0"
+                    placeholder="25"
+                    className={`${inputClass} pr-9`}
+                  />
+                  <DollarSign className={fieldIconClass} />
+                </div>
               </div>
 
               <div className="grid gap-2">
                 <Label htmlFor="maxSalary">Max Salary / Rate</Label>
-                <Input
-                  id="maxSalary"
-                  name="maxSalary"
-                  type="number"
-                  min="0"
-                  placeholder="40"
-                />
+                <div className="relative">
+                  <Input
+                    id="maxSalary"
+                    name="maxSalary"
+                    type="number"
+                    min="0"
+                    placeholder="40"
+                    className={`${inputClass} pr-9`}
+                  />
+                  <DollarSign className={fieldIconClass} />
+                </div>
               </div>
 
               <div className="grid gap-2">
                 <Label htmlFor="frequency">Frequency</Label>
                 <Select name="frequency" defaultValue="per hour">
-                  <SelectTrigger id="frequency" className="w-full">
+                  <SelectTrigger
+                    id="frequency"
+                    className={selectClass}
+                  >
                     <SelectValue placeholder="Select frequency" />
                   </SelectTrigger>
                   <SelectContent>
@@ -262,7 +319,7 @@ const AddJobPage = () => {
                 id="responsibilities"
                 name="responsibilities"
                 placeholder="Describe the day-to-day responsibilities of this role."
-                className="min-h-28"
+                className={textareaClass}
                 required
               />
             </div>
@@ -275,7 +332,7 @@ const AddJobPage = () => {
                 id="requirements"
                 name="requirements"
                 placeholder="List the skills, experience, and qualifications required."
-                className="min-h-28"
+                className={textareaClass}
                 required
               />
             </div>
