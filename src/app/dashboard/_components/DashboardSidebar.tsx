@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Sidebar,
   SidebarContent,
@@ -9,16 +11,136 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useSession } from "@/lib/auth-client";
+import type { LucideIcon } from "lucide-react";
+import {
+  Bookmark,
+  Briefcase,
+  Building2,
+  FileText,
+  LayoutDashboard,
+  Settings,
+  Users,
+  Wallet,
+} from "lucide-react";
 
-const menuItemByRole = {
-  seeker: [],
-  recruiter: [],
-  admin: [],
+type Role = "seeker" | "recruiter" | "admin";
+
+type MenuItem = {
+  _id: string;
+  name: string;
+  url: string;
+  icon: LucideIcon;
+};
+
+const menuItemByRole: Record<Role, MenuItem[]> = {
+  seeker: [
+    {
+      _id: "seeker-dashboard",
+      name: "Dashboard",
+      url: "/dashboard/seeker",
+      icon: LayoutDashboard,
+    },
+    {
+      _id: "seeker-jobs",
+      name: "Jobs",
+      url: "/dashboard/seeker/jobs",
+      icon: Briefcase,
+    },
+    {
+      _id: "seeker-saved",
+      name: "Saved Jobs",
+      url: "/dashboard/seeker/saved",
+      icon: Bookmark,
+    },
+    {
+      _id: "seeker-applications",
+      name: "Applications",
+      url: "/dashboard/seeker/applications",
+      icon: FileText,
+    },
+    {
+      _id: "seeker-billing",
+      name: "Billing",
+      url: "/dashboard/seeker/billing",
+      icon: Wallet,
+    },
+    {
+      _id: "seeker-settings",
+      name: "Settings",
+      url: "/dashboard/seeker/settings",
+      icon: Settings,
+    },
+  ],
+  recruiter: [
+    {
+      _id: "recruiter-dashboard",
+      name: "Dashboard",
+      url: "/dashboard/recruiter",
+      icon: LayoutDashboard,
+    },
+    {
+      _id: "recruiter-jobs",
+      name: "Manage Jobs",
+      url: "/dashboard/recruiter/jobs",
+      icon: Briefcase,
+    },
+    {
+      _id: "recruiter-applications",
+      name: "Applications",
+      url: "/dashboard/recruiter/applications",
+      icon: FileText,
+    },
+    {
+      _id: "recruiter-settings",
+      name: "Settings",
+      url: "/dashboard/recruiter/settings",
+      icon: Settings,
+    },
+  ],
+  admin: [
+    {
+      _id: "admin-dashboard",
+      name: "Dashboard",
+      url: "/dashboard/admin",
+      icon: LayoutDashboard,
+    },
+    {
+      _id: "admin-users",
+      name: "Users",
+      url: "/dashboard/admin/users",
+      icon: Users,
+    },
+    {
+      _id: "admin-companies",
+      name: "Companies",
+      url: "/dashboard/admin/companies",
+      icon: Building2,
+    },
+    {
+      _id: "admin-jobs",
+      name: "Jobs",
+      url: "/dashboard/admin/jobs",
+      icon: Briefcase,
+    },
+    {
+      _id: "admin-payments",
+      name: "Payments",
+      url: "/dashboard/admin/payments",
+      icon: Wallet,
+    },
+    {
+      _id: "admin-settings",
+      name: "Settings",
+      url: "/dashboard/admin/settings",
+      icon: Settings,
+    },
+  ],
 };
 
 export function DashboardSidebar() {
-  const { data: session, isPending } = useSession();
-  const role = session?.user?.role || "seeker";
+  const { data: session } = useSession();
+  const role = (session?.user?.role ?? "seeker") as Role;
+  const menuItems = menuItemByRole[role] ?? menuItemByRole.seeker;
 
   return (
     <Sidebar>
@@ -28,14 +150,14 @@ export function DashboardSidebar() {
         <SidebarGroup />
         <SidebarGroup>
           <SidebarMenu>
-            {/* {menuItemByRole[role].map((item) => (
+            {menuItems.map((item) => (
               <SidebarMenuItem key={item._id}>
                 <SidebarMenuButton render={<a href={item.url} />}>
                   <item.icon />
                   <span>{item.name}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-            ))} */}
+            ))}
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
