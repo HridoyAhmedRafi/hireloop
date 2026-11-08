@@ -17,7 +17,7 @@ export function DashboardSidebar() {
       <SidebarContent>
         <SidebarGroup />
         <SidebarGroup />
-        <SidebarGroup>  
+        <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupAction>
             <Plus /> <span className="sr-only">Add Project</span>
