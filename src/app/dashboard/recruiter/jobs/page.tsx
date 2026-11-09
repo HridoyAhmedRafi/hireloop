@@ -304,15 +304,16 @@ const ManageJobs = async () => {
 
                     <TableCell className="px-3 py-4 sm:px-4">
                       <div className="flex items-center justify-end gap-1">
-                        <Button
-                          size="sm"
-                          className="h-8 gap-1.5 bg-[#5c53fe]/20 text-[#c3c0ff] hover:bg-[#5c53fe]/30"
-                          // onClick={() => handleAction("Update", job)}
-                        >
-                          <Pencil />
-                          <span className="hidden sm:inline">Update</span>
-                          <span className="sr-only sm:hidden">Update</span>
-                        </Button>
+                        <Link href={`/dashboard/recruiter/jobs/${job._id}`}>
+                          <Button
+                            size="sm"
+                            className="h-8 gap-1.5 bg-[#5c53fe]/20 text-[#c3c0ff] hover:bg-[#5c53fe]/30"
+                          >
+                            <Pencil />
+                            <span className="hidden sm:inline">Update</span>
+                            <span className="sr-only sm:hidden">Update</span>
+                          </Button>
+                        </Link>
 
                         {/* delete job */}
                         <DeleteJob job={job}></DeleteJob>
