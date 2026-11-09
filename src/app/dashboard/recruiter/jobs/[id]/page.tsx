@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, DollarSign, Globe, MapPin, Plus } from "lucide-react";
+import { Building2, DollarSign, Globe, MapPin, Save } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -22,14 +22,17 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { IJob } from "@/lib/job-type";
+import { IJob, IJobPost } from "@/lib/job-type";
+import { useParams, useRouter } from "next/navigation";
+import { getSingleJob } from "@/lib/api/jobs";
+import { useEffect, useState } from "react";
+import { updateJob } from "@/lib/actions/jobs";
 import { toast } from "@/components/ui/toast";
-import { useParams } from "next/navigation";
-import { getJobs } from "@/lib/api/jobs";
 
 const JOB_TYPES = ["Full-time", "Part-time", "Contract", "Internship"];
 
 const CATEGORIES = [
+  "Engineering",
   "Engineering & Tech",
   "Design",
   "Marketing",
@@ -60,7 +63,37 @@ const fieldIconClass =
   "pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-[#a0a0ab]";
 
 const UpdateJob = () => {
-  const { id } = useParams();
+  const router = useRouter();
+  const { id } = useParams<{ id: string }>();
+  const [singleJob, setSingleJob] = useState<IJobPost | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getSingleJob(id)
+      .then(setSingleJob)
+      .catch(() => setSingleJob(null))
+      .finally(() => setLoading(false));
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div
+        className={`flex w-full flex-1 items-center justify-center p-8 ${FIGMA_THEME}`}
+      >
+        <p className="text-sm text-muted-foreground">Loading job details…</p>
+      </div>
+    );
+  }
+
+  if (!singleJob) {
+    return (
+      <div
+        className={`flex w-full flex-1 items-center justify-center p-8 ${FIGMA_THEME}`}
+      >
+        <p className="text-sm text-muted-foreground">Job not found.</p>
+      </div>
+    );
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -81,16 +114,15 @@ const UpdateJob = () => {
       requirements: String(formData.get("requirements") ?? ""),
     };
 
-    // const result = await getJobs();
-
-    // if (result.acknowledged === true) {
-    //   toast.add({
-    //     title: "Added",
-    //     description: "Job added successfully",
-    //   });
-    // }
+    const result = await updateJob(singleJob._id, job);
+    if (result.modifiedCount) {
+      toast.add({
+        title: "Updated",
+        description: "Job updated successfully",
+      });
+      router.push("/dashboard/recruiter/jobs");
+    }
   };
-
   return (
     <div className={`flex w-full flex-1 flex-col p-4 md:p-8 ${FIGMA_THEME}`}>
       <form
@@ -100,17 +132,17 @@ const UpdateJob = () => {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">
-              Post a New Job
+              Update Job
             </h1>
-            <p>{id}</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Fill in the position specifications to attract qualified talent.
+              Update the position specifications for this role.
             </p>
+            <p>{singleJob._id}</p>
           </div>
 
-          <Button type="submit" size="lg" className="gap-2 sm:shrink-0">
-            <Plus />
-            Publish Job
+          <Button type="submit" size="lg" className="cursor-pointer gap-2 sm:shrink-0">
+            <Save />
+            Update Job
           </Button>
         </div>
 
@@ -128,7 +160,7 @@ const UpdateJob = () => {
               <Input
                 id="title"
                 name="title"
-                placeholder="Frontend Developer"
+                defaultValue={singleJob.title}
                 className={inputClass}
                 required
               />
@@ -141,7 +173,7 @@ const UpdateJob = () => {
                   <Input
                     id="company"
                     name="company"
-                    placeholder="HirePulse Network"
+                    defaultValue={singleJob.company}
                     className={`${inputClass} pr-9`}
                     required
                   />
@@ -154,7 +186,7 @@ const UpdateJob = () => {
                 <Select
                   name="category"
                   required
-                  defaultValue="Engineering & Tech"
+                  defaultValue={singleJob.category}
                 >
                   <SelectTrigger id="category" className={selectClass}>
                     <SelectValue placeholder="Select a category" />
@@ -174,7 +206,7 @@ const UpdateJob = () => {
               <Label>Job Type *</Label>
               <RadioGroup
                 name="jobType"
-                defaultValue="Full-time"
+                defaultValue={singleJob.jobType}
                 required
                 className="grid grid-cols-2 gap-2 md:grid-cols-4"
               >
@@ -218,7 +250,11 @@ const UpdateJob = () => {
                   </p>
                 </div>
               </div>
-              <Switch id="remote" name="remote" />
+              <Switch
+                id="remote"
+                name="remote"
+                defaultChecked={singleJob.remote}
+              />
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
@@ -228,7 +264,7 @@ const UpdateJob = () => {
                   <Input
                     id="location"
                     name="location"
-                    placeholder="New York, USA"
+                    defaultValue={singleJob.location}
                     className={`${inputClass} pr-9`}
                     required
                   />
@@ -242,6 +278,7 @@ const UpdateJob = () => {
                   id="deadline"
                   name="deadline"
                   type="date"
+                  defaultValue={singleJob.deadline}
                   className={inputClass}
                 />
               </div>
@@ -256,7 +293,7 @@ const UpdateJob = () => {
                     name="minSalary"
                     type="number"
                     min="0"
-                    placeholder="25"
+                    defaultValue={singleJob.minSalary}
                     className={`${inputClass} pr-9`}
                   />
                   <DollarSign className={fieldIconClass} />
@@ -271,7 +308,7 @@ const UpdateJob = () => {
                     name="maxSalary"
                     type="number"
                     min="0"
-                    placeholder="40"
+                    defaultValue={singleJob.maxSalary}
                     className={`${inputClass} pr-9`}
                   />
                   <DollarSign className={fieldIconClass} />
@@ -280,7 +317,7 @@ const UpdateJob = () => {
 
               <div className="grid gap-2">
                 <Label htmlFor="frequency">Frequency</Label>
-                <Select name="frequency" defaultValue="per hour">
+                <Select name="frequency" defaultValue={singleJob.frequency}>
                   <SelectTrigger id="frequency" className={selectClass}>
                     <SelectValue placeholder="Select frequency" />
                   </SelectTrigger>
@@ -314,7 +351,7 @@ const UpdateJob = () => {
               <Textarea
                 id="responsibilities"
                 name="responsibilities"
-                placeholder="Describe the day-to-day responsibilities of this role."
+                defaultValue={singleJob.responsibilities}
                 className={textareaClass}
                 required
               />
@@ -327,7 +364,7 @@ const UpdateJob = () => {
               <Textarea
                 id="requirements"
                 name="requirements"
-                placeholder="List the skills, experience, and qualifications required."
+                defaultValue={singleJob.requirements}
                 className={textareaClass}
                 required
               />

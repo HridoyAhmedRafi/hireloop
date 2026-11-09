@@ -25,6 +25,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { AddJob } from "@/lib/actions/jobs";
 import { IJob } from "@/lib/job-type";
 import { toast } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
 
 const JOB_TYPES = ["Full-time", "Part-time", "Contract", "Internship"];
 
@@ -59,6 +60,7 @@ const fieldIconClass =
   "pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-[#a0a0ab]";
 
 const AddJobPage = () => {
+  const router = useRouter();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -85,6 +87,7 @@ const AddJobPage = () => {
         title: "Added",
         description: "Job added successfully",
       });
+      router.push("/dashboard/recruiter/jobs");
     }
   };
 
@@ -104,7 +107,11 @@ const AddJobPage = () => {
             </p>
           </div>
 
-          <Button type="submit" size="lg" className="gap-2 sm:shrink-0">
+          <Button
+            type="submit"
+            size="lg"
+            className="cursor-pointer gap-2 sm:shrink-0"
+          >
             <Plus />
             Publish Job
           </Button>
