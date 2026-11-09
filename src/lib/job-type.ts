@@ -1,3 +1,12 @@
+export type JobStatus = "Active" | "Expired";
+
+export type IJobPost = IJob & {
+  _id: string;
+  status: JobStatus;
+  applicants: number;
+  postedAt: string;
+};
+
 export type IJob = {
   title: string;
   company: string;

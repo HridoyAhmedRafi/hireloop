@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  Building2,
-  DollarSign,
-  Globe,
-  MapPin,
-  Plus,
-} from "lucide-react";
+import { Building2, DollarSign, Globe, MapPin, Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -30,6 +24,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { AddJob } from "@/lib/actions/jobs";
 import { IJob } from "@/lib/job-type";
+import { toast } from "@/components/ui/toast";
 
 const JOB_TYPES = ["Full-time", "Part-time", "Contract", "Internship"];
 
@@ -85,13 +80,16 @@ const AddJobPage = () => {
 
     const result = await AddJob(job);
 
-    console.log("New job:", result);
+    if (result.acknowledged === true) {
+      toast.add({
+        title: "Added",
+        description: "Job added successfully",
+      });
+    }
   };
 
   return (
-    <div
-      className={`flex w-full flex-1 flex-col p-4 md:p-8 ${FIGMA_THEME}`}
-    >
+    <div className={`flex w-full flex-1 flex-col p-4 md:p-8 ${FIGMA_THEME}`}>
       <form
         onSubmit={handleSubmit}
         className="m-auto w-full max-w-4xl space-y-6"
@@ -154,10 +152,7 @@ const AddJobPage = () => {
                   required
                   defaultValue="Engineering & Tech"
                 >
-                  <SelectTrigger
-                    id="category"
-                    className={selectClass}
-                  >
+                  <SelectTrigger id="category" className={selectClass}>
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
                   <SelectContent>
@@ -282,10 +277,7 @@ const AddJobPage = () => {
               <div className="grid gap-2">
                 <Label htmlFor="frequency">Frequency</Label>
                 <Select name="frequency" defaultValue="per hour">
-                  <SelectTrigger
-                    id="frequency"
-                    className={selectClass}
-                  >
+                  <SelectTrigger id="frequency" className={selectClass}>
                     <SelectValue placeholder="Select frequency" />
                   </SelectTrigger>
                   <SelectContent>

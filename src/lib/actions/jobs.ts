@@ -10,3 +10,10 @@ export const AddJob = async (data: IJob) => {
   });
   return res.json();
 };
+
+export const deleteJob = async (jobId: string) => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jobs/${jobId}`, {
+    method: "DELETE",
+  });
+  return res.json();
+};

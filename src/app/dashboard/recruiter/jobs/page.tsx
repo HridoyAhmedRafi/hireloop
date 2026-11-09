@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import {
   Briefcase,
@@ -15,7 +13,6 @@ import {
   Pencil,
   Plus,
   Server,
-  Trash2,
   TrendingUp,
   Users,
   UsersRound,
@@ -40,21 +37,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { IJob } from "@/lib/job-type";
+import type { IJob, IJobPost } from "@/lib/job-type";
+import { getJobs } from "@/lib/api/jobs";
+import { DeleteJob } from "../../_components/DeleteJob";
 
 // Figma palette (Manage Job Posts / 83484:1158)
 const FIGMA_THEME =
   "[--background:#131314] [--foreground:#f4f4f5] [--card:#151516] [--card-foreground:#f4f4f5] [--popover:#151516] [--popover-foreground:#f4f4f5] [--primary:#5c53fe] [--primary-foreground:#ffffff] [--secondary:#232327] [--secondary-foreground:#f4f4f5] [--muted:#232327] [--muted-foreground:#a0a0ab] [--accent:#232327] [--accent-foreground:#f4f4f5] [--border:#232327] [--input:#232327] [--ring:#5c53fe]";
-
-type JobStatus = "Active" | "Expired";
-
-// Fields the API will return on top of what the Add Job form submits.
-type JobPost = IJob & {
-  _id: string;
-  status: JobStatus;
-  applicants: number;
-  postedAt: string;
-};
 
 type CategoryMeta = {
   icon: LucideIcon;
@@ -104,115 +93,9 @@ const FREQUENCY_LABEL: Record<string, string> = {
 
 const DAY = 86_400_000;
 
-const daysAgo = (days: number) => {
-  const now = new Date();
-  const date = new Date(
-    Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - days),
-  );
-
-  return date.toISOString().slice(0, 10);
-};
-
-// TODO: replace with data from the API.
-const dummyJobs: JobPost[] = [
-  {
-    _id: "job-1",
-    title: "Frontend Developer",
-    company: "HirePulse Network",
-    category: "Engineering",
-    jobType: "Full-time",
-    remote: true,
-    location: "New York, USA",
-    deadline: "2025-05-30",
-    minSalary: "25",
-    maxSalary: "40",
-    frequency: "per hour",
-    responsibilities: "Build and maintain the candidate-facing interface.",
-    requirements: "3+ years of React and TypeScript experience.",
-    status: "Active",
-    applicants: 34,
-    postedAt: daysAgo(4),
-  },
-  {
-    _id: "job-2",
-    title: "Senior Product Designer",
-    company: "HirePulse Labs",
-    category: "Design",
-    jobType: "Full-time",
-    remote: false,
-    location: "London, UK",
-    deadline: "2025-06-14",
-    minSalary: "90000",
-    maxSalary: "115000",
-    frequency: "per year",
-    responsibilities: "Own the end-to-end design of the hiring workflow.",
-    requirements:
-      "5+ years of product design experience with a strong portfolio.",
-    status: "Active",
-    applicants: 19,
-    postedAt: daysAgo(7),
-  },
-  {
-    _id: "job-3",
-    title: "DevOps Specialist",
-    company: "HirePulse Platform",
-    category: "Infrastructure",
-    jobType: "Full-time",
-    remote: false,
-    location: "Berlin, Germany",
-    deadline: "2025-06-30",
-    minSalary: "95000",
-    maxSalary: "120000",
-    frequency: "per year",
-    responsibilities: "Maintain CI/CD pipelines and cloud infrastructure.",
-    requirements: "Hands-on experience with AWS, Docker, and Kubernetes.",
-    status: "Active",
-    applicants: 12,
-    postedAt: daysAgo(14),
-  },
-  {
-    _id: "job-4",
-    title: "Product Marketing Lead",
-    company: "HirePulse Network",
-    category: "Marketing",
-    jobType: "Full-time",
-    remote: true,
-    location: "EU / US",
-    deadline: "2025-07-15",
-    minSalary: "80000",
-    maxSalary: "105000",
-    frequency: "per year",
-    responsibilities: "Plan go-to-market campaigns for new product launches.",
-    requirements: "Experience marketing B2B SaaS products.",
-    status: "Active",
-    applicants: 27,
-    postedAt: daysAgo(5),
-  },
-  {
-    _id: "job-5",
-    title: "QA Automation Engineer",
-    company: "HirePulse Platform",
-    category: "Quality",
-    jobType: "Part-time",
-    remote: false,
-    location: "Dublin, Ireland",
-    deadline: "2025-05-01",
-    minSalary: "35",
-    maxSalary: "50",
-    frequency: "per hour",
-    responsibilities: "Write and maintain automated end-to-end tests.",
-    requirements: "Experience with Playwright or Cypress.",
-    status: "Expired",
-    applicants: 8,
-    postedAt: daysAgo(40),
-  },
-];
-
 const formatAmount = (amount: string) => {
   const value = Number(amount);
-
   if (!amount || Number.isNaN(value)) return "";
-
   return value >= 1000 ? `${Math.round(value / 1000)}k` : `${value}`;
 };
 
@@ -222,15 +105,12 @@ const formatCompensation = (job: IJob) => {
   const range = min && max ? `€${min} – €${max}` : `€${min || max}`;
 
   if (!min && !max) return "—";
-
   return `${range} ${FREQUENCY_LABEL[job.frequency] ?? ""}`.trim();
 };
 
 const formatDeadline = (deadline: string) => {
   if (!deadline) return "No deadline";
-
   const date = new Date(`${deadline}T00:00:00`);
-
   if (Number.isNaN(date.getTime())) return deadline;
 
   return date.toLocaleDateString("en-US", {
@@ -244,7 +124,6 @@ const formatRelative = (date: string) => {
   const posted = new Date(`${date}T00:00:00Z`);
 
   if (Number.isNaN(posted.getTime())) return "";
-
   const now = new Date();
   const today = Date.UTC(
     now.getUTCFullYear(),
@@ -255,17 +134,11 @@ const formatRelative = (date: string) => {
 
   if (days === 0) return "Posted today";
   if (days < 7) return `Posted ${days}d ago`;
-
   return `Posted ${Math.round(days / 7)}w ago`;
 };
 
-const ManageJobs = () => {
-  const jobs = dummyJobs;
-
-  // TODO: replace these placeholders with API calls.
-  const handleAction = (action: string, job: JobPost) => {
-    console.log(`${action}:`, job.title);
-  };
+const ManageJobs = async () => {
+  const jobs: IJobPost[] = await getJobs();
 
   return (
     <div
@@ -434,22 +307,15 @@ const ManageJobs = () => {
                         <Button
                           size="sm"
                           className="h-8 gap-1.5 bg-[#5c53fe]/20 text-[#c3c0ff] hover:bg-[#5c53fe]/30"
-                          onClick={() => handleAction("Update", job)}
+                          // onClick={() => handleAction("Update", job)}
                         >
                           <Pencil />
                           <span className="hidden sm:inline">Update</span>
                           <span className="sr-only sm:hidden">Update</span>
                         </Button>
 
-                        <Button
-                          variant="ghost"
-                          size="icon-sm"
-                          aria-label={`Delete ${job.title}`}
-                          className="size-8 bg-[#1f1f1f] text-[#a0a0ab] hover:bg-[#232327] hover:text-[#f4f4f5]"
-                          onClick={() => handleAction("Delete", job)}
-                        >
-                          <Trash2 />
-                        </Button>
+                        {/* delete job */}
+                        <DeleteJob job={job}></DeleteJob>
 
                         <DropdownMenu>
                           <DropdownMenuTrigger
@@ -467,7 +333,7 @@ const ManageJobs = () => {
 
                           <DropdownMenuContent align="end">
                             <DropdownMenuItem
-                              onClick={() => handleAction("View", job)}
+                            // onClick={() => handleAction("View", job)}
                             >
                               <Eye />
                               View
