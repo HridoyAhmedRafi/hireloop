@@ -16,10 +16,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { IJobPost } from "@/lib/job-type";
-import { deleteJob } from "@/lib/actions/jobs";
 import { useState } from "react";
 import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
+import { deleteJob } from "@/lib/api/jobs";
 
 export function DeleteJob({ job }: { job: IJobPost }) {
   const router = useRouter();

@@ -22,10 +22,10 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { AddJob } from "@/lib/actions/jobs";
 import { IJob } from "@/lib/job-type";
 import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
+import { AddJob } from "@/lib/api/jobs";
 
 const JOB_TYPES = ["Full-time", "Part-time", "Contract", "Internship"];
 

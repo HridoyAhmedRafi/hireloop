@@ -24,9 +24,8 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { IJob, IJobPost } from "@/lib/job-type";
 import { useParams, useRouter } from "next/navigation";
-import { getSingleJob } from "@/lib/api/jobs";
+import { getSingleJob, updateJob } from "@/lib/api/jobs";
 import { useEffect, useState } from "react";
-import { updateJob } from "@/lib/actions/jobs";
 import { toast } from "@/components/ui/toast";
 
 const JOB_TYPES = ["Full-time", "Part-time", "Contract", "Internship"];

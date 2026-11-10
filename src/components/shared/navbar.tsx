@@ -11,7 +11,7 @@ import { useSession } from "@/lib/auth-client";
 import logo from "@/assets/logo.png";
 
 const NAV_LINKS = [
-  { label: "Browse Jobs", href: "/jobs" },
+  { label: "Browse Jobs", href: "/browse-jobs" },
   { label: "Company", href: "/company" },
   { label: "Pricing", href: "/pricing" },
 ] as const;
