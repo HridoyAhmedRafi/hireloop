@@ -2,7 +2,6 @@ import type { IJobPost } from "../job-type";
 
 // mutation
 import { IJob } from "../job-type";
-
 export const AddJob = async (data: IJob) => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/add-job`, {
     method: "POST",
@@ -13,14 +12,14 @@ export const AddJob = async (data: IJob) => {
   });
   return res.json();
 };
-
+// deleting data
 export const deleteJob = async (jobId: string) => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jobs/${jobId}`, {
     method: "DELETE",
   });
   return res.json();
 };
-
+// updating data
 export const updateJob = async (id: string, data: IJob) => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jobs/${id}`, {
     method: "PATCH",
@@ -33,13 +32,13 @@ export const updateJob = async (id: string, data: IJob) => {
 };
 
 // getting
-export const getJobs = async (): Promise<IJobPost[]> => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jobs`, {
+export const getJobs = async ({ query = "" }): Promise<IJobPost[]> => {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jobs?${query}`, {
     cache: "no-store",
   });
   return res.json();
 };
-
+// getting single data
 export const getSingleJob = async (id: string): Promise<IJobPost | null> => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jobs/${id}`, {
     cache: "no-store",
