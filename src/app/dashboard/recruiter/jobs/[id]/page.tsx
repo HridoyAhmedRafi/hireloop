@@ -137,10 +137,13 @@ const UpdateJob = () => {
             <p className="mt-1 text-sm text-muted-foreground">
               Update the position specifications for this role.
             </p>
-            <p>{singleJob._id}</p>
           </div>
 
-          <Button type="submit" size="lg" className="cursor-pointer gap-2 sm:shrink-0">
+          <Button
+            type="submit"
+            size="lg"
+            className="cursor-pointer gap-2 sm:shrink-0"
+          >
             <Save />
             Update Job
           </Button>
