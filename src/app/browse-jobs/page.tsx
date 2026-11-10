@@ -61,8 +61,15 @@ const BrowseJobs = async ({
     }
   }
 
-  const jobs = await getJobs(query.toString());
-  const filterGroups = buildFilterGroups(jobs);
+  const queryString = query.toString();
+
+  const [jobs, allJobs] = await Promise.all([
+    getJobs(queryString),
+    queryString ? getJobs("") : Promise.resolve(null),
+  ]);
+
+  // Counts always come from all jobs, so filtering never hides other options.
+  const filterGroups = buildFilterGroups(allJobs ?? jobs);
 
   return (
     <>

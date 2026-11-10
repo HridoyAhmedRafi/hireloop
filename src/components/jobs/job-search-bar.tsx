@@ -1,24 +1,30 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useRouter } from "next/navigation";
 
 export function JobSearchBar() {
   const router = useRouter();
-  const [keyword, setKeyword] = useState("");
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [keyword, setKeyword] = useState(
+    () => searchParams.get("search") ?? ""
+  );
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
-    const data = Object.fromEntries(formData.entries());
-    const search = data.searchField;
 
-    const params = new URLSearchParams();
-    params.set("search", search as string);
-    router.push(`/browse-jobs?${params.toString()}`);
+    const params = new URLSearchParams(searchParams.toString());
+    const term = keyword.trim();
+
+    if (term) params.set("search", term);
+    else params.delete("search");
+
+    const next = params.toString();
+    router.push(next ? `${pathname}?${next}` : pathname, { scroll: false });
   };
 
   return (
@@ -34,7 +40,7 @@ export function JobSearchBar() {
         />
         <Input
           type="search"
-          name="searchField"
+          name="search"
           value={keyword}
           onChange={(event) => setKeyword(event.target.value)}
           placeholder="Search by job title, keywords..."
@@ -45,7 +51,7 @@ export function JobSearchBar() {
 
       <Button
         type="submit"
-        className="cursor-pointer h-10 shrink-0 rounded-lg bg-foreground px-5 text-background hover:bg-foreground/90"
+        className="h-10 shrink-0 cursor-pointer rounded-lg bg-foreground px-5 text-background hover:bg-foreground/90"
       >
         Search Jobs
       </Button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronDown } from "lucide-react";
 import { cn } from "cn";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -25,21 +26,34 @@ const toSlug = (value: string) =>
   value.toLowerCase().replace(/[^a-z0-9]+/g, "-");
 
 export function JobFilters({ groups }: JobFiltersProps) {
-  const [selected, setSelected] = useState<Record<string, string | undefined>>(
-    {},
-  );
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
 
-  const selectOption = (groupId: string, value: string) => {
-    setSelected((previous) => ({ ...previous, [groupId]: value }));
+  // The URL is the source of truth, so filters survive refresh and back/forward.
+  const selected: Record<string, string | undefined> = Object.fromEntries(
+    groups.map(
+      (group) => [group.id, searchParams.get(group.id) ?? undefined] as const
+    )
+  );
 
-    // TODO: turn the selected filters into the query string / API request.
+  const updateParams = (change: (params: URLSearchParams) => void) => {
+    const params = new URLSearchParams(searchParams.toString());
+    change(params);
+
+    const next = params.toString();
+    router.push(next ? `${pathname}?${next}` : pathname, { scroll: false });
+  };
+
+  const selectOption = (groupId: string, value: string) => {
+    updateParams((params) => params.set(groupId, value));
   };
 
   const clearAll = () => {
-    setSelected({});
-
-    // TODO: clear the filters from the query string / API request.
+    updateParams((params) => {
+      groups.forEach((group) => params.delete(group.id));
+    });
   };
 
   const toggleSection = (groupId: string) => {
@@ -49,7 +63,7 @@ export function JobFilters({ groups }: JobFiltersProps) {
     }));
   };
 
-  const hasSelection = Object.values(selected).some(Boolean);
+  const hasSelection = groups.some((group) => selected[group.id]);
 
   return (
     <aside className="self-start rounded-xl border border-border bg-card p-5 lg:sticky lg:top-6">
@@ -88,7 +102,7 @@ export function JobFilters({ groups }: JobFiltersProps) {
                   aria-hidden="true"
                   className={cn(
                     "size-4 shrink-0 text-muted-foreground transition-transform",
-                    isOpen && "rotate-180",
+                    isOpen && "rotate-180"
                   )}
                 />
               </button>
@@ -100,7 +114,7 @@ export function JobFilters({ groups }: JobFiltersProps) {
                   onValueChange={(value) => selectOption(group.id, value)}
                   className={cn(
                     "gap-0 pt-1 pb-2",
-                    group.options.length > 8 && "max-h-64 overflow-y-auto pr-1",
+                    group.options.length > 8 && "max-h-64 overflow-y-auto pr-1"
                   )}
                   id={contentId}
                 >
