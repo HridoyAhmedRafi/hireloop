@@ -32,7 +32,7 @@ export const updateJob = async (id: string, data: IJob) => {
 };
 
 // getting
-export const getJobs = async ({ query = "" }): Promise<IJobPost[]> => {
+export const getJobs = async (query = ""): Promise<IJobPost[]> => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/jobs?${query}`, {
     cache: "no-store",
   });
