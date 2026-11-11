@@ -5,7 +5,6 @@ import { DUMMY_APPLICATIONS } from "@/lib/dummy-applications";
 const ApplicationsPage = () => {
   // TODO: replace with the fetched applications once the API exposes GET /applications.
   const applications: IApplicationRecord[] = DUMMY_APPLICATIONS;
-
   return <ApplicationsView applications={applications} />;
 };
 
