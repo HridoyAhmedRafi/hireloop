@@ -1,11 +1,14 @@
+"use client";
 import { Sparkles, Wallet, Zap } from "lucide-react";
 import type { IJobPost } from "@/lib/job-type";
 import {
   formatCompensation,
+  formatJobLocation,
   getCompanyInitials,
   isNewJob,
 } from "@/lib/job-format";
 import { BookmarkButton } from "./bookmark-button";
+import { useRouter } from "next/navigation";
 
 type JobCardProps = {
   job: IJobPost;
@@ -15,8 +18,15 @@ const PILL =
   "inline-flex h-6 w-fit items-center gap-1.5 rounded-full border border-border bg-secondary/40 px-2.5 text-xs font-medium text-muted-foreground";
 
 export function JobCard({ job }: JobCardProps) {
+  const router = useRouter();
+  const handleViewDetails = (id: string) => {
+    router.push(`/browse-jobs/${id}`);
+  };
   return (
-    <article className="rounded-xl border border-border bg-card p-5 transition-colors hover:border-border/80 hover:bg-card/60">
+    <article
+      onClick={() => handleViewDetails(job._id)}
+      className="cursor-pointer rounded-xl border border-border bg-card p-5 transition-colors hover:border-border/80 hover:bg-card/60"
+    >
       <div className="flex items-start gap-4">
         <div
           aria-hidden="true"
@@ -36,8 +46,7 @@ export function JobCard({ job }: JobCardProps) {
                 <span aria-hidden="true" className="mx-1.5">
                   •
                 </span>
-                {job.location}
-                {job.remote ? " (Remote)" : ""}
+                {formatJobLocation(job)}
               </p>
             </div>
 
@@ -51,19 +60,26 @@ export function JobCard({ job }: JobCardProps) {
             </span>
 
             <span className={PILL}>
-              <span aria-hidden="true" className="size-1.5 rounded-full bg-current" />
+              <span
+                aria-hidden="true"
+                className="size-1.5 rounded-full bg-current"
+              />
               {job.jobType}
             </span>
 
             {job.status === "Active" && (
-              <span className={`${PILL} border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400`}>
+              <span
+                className={`${PILL} border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400`}
+              >
                 <Zap className="size-3.5" />
                 Easy Apply
               </span>
             )}
 
             {isNewJob(job.postedAt) && (
-              <span className={`${PILL} border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400`}>
+              <span
+                className={`${PILL} border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400`}
+              >
                 <Sparkles className="size-3.5" />
                 New Job
               </span>

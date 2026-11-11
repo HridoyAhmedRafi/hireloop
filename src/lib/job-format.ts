@@ -53,3 +53,16 @@ export const getCompanyInitials = (company: string) =>
     .slice(0, 2)
     .map((word) => word[0]?.toUpperCase() ?? "")
     .join("") || "?";
+
+/** "United States (Remote)", without repeating "Remote" if it is already there. */
+export const formatJobLocation = (job: IJob) => {
+  if (!job.remote) return job.location;
+  return /remote/i.test(job.location) ? job.location : `${job.location} (Remote)`;
+};
+
+/** Splits a newline separated text field (responsibilities, requirements) into a list. */
+export const toLines = (value?: string) =>
+  value
+    ?.split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean) ?? [];
