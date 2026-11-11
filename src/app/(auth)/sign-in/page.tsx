@@ -15,12 +15,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { toast } from "@/components/ui/toast";
 
 export default function SignInPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo") ?? "/";
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,22 +35,30 @@ export default function SignInPage() {
       password: string;
     };
 
-    console.log("Sign In Data:", user);
-
     try {
       const { data, error } = await authClient.signIn.email({
         ...user,
+        callbackURL: redirectTo,
       });
       if (error) {
-        toast.error(error.message as string);
+        toast.add({
+          title: "Error ",
+          description: `${error.message}`,
+        });
       }
       if (data) {
-        toast.success("Signed in successfully!");
+        toast.add({
+          title: "Sgined ",
+          description: "Signed in successfully!",
+        });
         router.push("/");
       }
     } catch (error) {
       console.log("Something went wrong:", error);
-      toast.error("An error occurred while signing in. Please try again.");
+      toast.add({
+        title: "Error ",
+        description: "An error occurred while signing in. Please try again.",
+      });
     }
   };
 

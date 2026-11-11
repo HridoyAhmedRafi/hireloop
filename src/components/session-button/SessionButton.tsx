@@ -8,6 +8,7 @@ import { ChevronDown, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { authClient, useSession } from "@/lib/auth-client";
+import { toast } from "../ui/toast";
 
 const SIGN_IN =
   "text-sm font-medium text-indigo-600 transition-colors hover:texst-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300";
@@ -51,6 +52,10 @@ function SessionButton({ variant = "bar" }: { variant?: "bar" | "menu" }) {
   const signOut = async () => {
     setOpen(false);
     await authClient.signOut();
+    toast.add({
+      title: "Sign Out ",
+      description: "Sign Out successfully!!",
+    });
     router.refresh();
   };
 

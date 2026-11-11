@@ -42,7 +42,7 @@ export function JobDetailsHeader({ job }: JobDetailsHeaderProps) {
           </div>
         </div>
 
-        <JobDetailsActions jobTitle={job.title} />
+        <JobDetailsActions job={job} />
       </div>
     </header>
   );

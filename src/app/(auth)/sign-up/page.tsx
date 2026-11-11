@@ -23,8 +23,8 @@ import {
 } from "@/components/ui/card";
 import { authClient } from "@/lib/auth-client";
 import { cn } from "cn";
-import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/toast";
 
 const ROLES = [
   {
@@ -69,15 +69,26 @@ export default function SignUpPage() {
         role,
       });
       if (error) {
-        toast.error(error.message as string);
+        toast.add({
+          title: "Error ",
+          description: `${error.message}`,
+        });
+        // toast.error(error.message as string);
       }
       if (data) {
-        toast.success("Account created successfully!");
+        toast.add({
+          title: "Account created ",
+          description: "Account created successfully!",
+        });
         router.push("/sign-in"); // Redirect to sign-in page after successful sign-up
       }
     } catch (error) {
       console.error("Something went wrong:", error);
-      toast.error("An error occurred while creating your account.");
+      toast.add({
+        title: "Error",
+        description: "An error occurred while creating your account.",
+      });
+      // toast.error("An error occurred while creating your account.");
     }
   };
 

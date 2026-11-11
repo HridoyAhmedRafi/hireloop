@@ -2,14 +2,52 @@
 
 import { Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { IJobDetails } from "@/lib/job-details-type";
+import { useSession } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+import { toast } from "../ui/toast";
+import { ApplyJob } from "@/lib/api/applications";
 
 type JobDetailsActionsProps = {
-  jobTitle: string;
+  job: IJobDetails;
 };
 
-export function JobDetailsActions({ jobTitle }: JobDetailsActionsProps) {
-  const handleApply = () => {
-    // TODO: open the apply flow for this job.
+export function JobDetailsActions({ job }: JobDetailsActionsProps) {
+  const { data: session } = useSession();
+  const user = session?.user;
+
+  const router = useRouter();
+  const handleApply = async () => {
+    if (!user) {
+      router.push(`/sign-in?redirectTo=/browse-jobs/${job._id}`);
+      toast.add({
+        title: "Login",
+        description: "Login required for apply.",
+      });
+      return;
+    } else if (user.role === "seeker") {
+      const application = {
+        jobId: job._id,
+        userId: user.id,
+        email: user.email,
+        jobTitile: job.title,
+        companyName: job.company,
+      };
+
+      const res = await ApplyJob(application);
+      if (res.acknowledged === true) {
+        toast.add({
+          title: "Applied",
+          description: "Applied successfully!",
+        });
+        router.push(`/browse-jobs`);
+      }
+    } else {
+      toast.add({
+        title: "Not a seeker",
+        description: "User not job seeker",
+      });
+    }
   };
 
   const handleBookmark = () => {
@@ -22,7 +60,7 @@ export function JobDetailsActions({ jobTitle }: JobDetailsActionsProps) {
         type="button"
         variant="outline"
         size="icon"
-        aria-label={`Bookmark ${jobTitle}`}
+        aria-label={`Bookmark ${job.title}`}
         onClick={handleBookmark}
         className="size-9 cursor-pointer border-border bg-card text-muted-foreground hover:text-foreground"
       >
