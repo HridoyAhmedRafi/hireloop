@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 
@@ -19,6 +19,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "@/components/ui/toast";
 
 export default function SignInPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignInForm />
+    </Suspense>
+  );
+}
+
+function SignInForm() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
 

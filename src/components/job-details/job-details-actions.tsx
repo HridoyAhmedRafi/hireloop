@@ -7,6 +7,7 @@ import { useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { toast } from "../ui/toast";
 import { ApplyJob } from "@/lib/api/applications";
+import type { IApplication } from "@/lib/application-type";
 
 type JobDetailsActionsProps = {
   job: IJobDetails;
@@ -26,21 +27,38 @@ export function JobDetailsActions({ job }: JobDetailsActionsProps) {
       });
       return;
     } else if (user.role === "seeker") {
-      const application = {
+      const application: IApplication = {
         jobId: job._id,
+        jobTitle: job.title,
+        companyName: job.company,
         userId: user.id,
         email: user.email,
-        jobTitile: job.title,
-        companyName: job.company,
+        jobType: job.jobType,
+        remote: job.remote,
+        location: job.location,
+        minSalary: job.minSalary,
+        maxSalary: job.maxSalary,
+        frequency: job.frequency,
+        archived: false,
       };
 
-      const res = await ApplyJob(application);
-      if (res.acknowledged === true) {
+      try {
+        const res = await ApplyJob(application);
+
+        if (!res.acknowledged) {
+          throw new Error("Application was not saved");
+        }
+
         toast.add({
           title: "Applied",
           description: "Applied successfully!",
         });
         router.push(`/browse-jobs`);
+      } catch {
+        toast.add({
+          title: "Something went wrong",
+          description: "Could not submit your application. Please try again.",
+        });
       }
     } else {
       toast.add({
