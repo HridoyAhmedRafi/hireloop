@@ -66,3 +66,15 @@ export const toLines = (value?: string) =>
     ?.split(/\r?\n/)
     .map((line) => line.trim())
     .filter(Boolean) ?? [];
+
+/** "2026-11-08" -> "Nov 08, 2026". */
+export const formatPostedDate = (value: string) => {
+  const date = parseDate(value);
+  if (!date) return "—";
+
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+};

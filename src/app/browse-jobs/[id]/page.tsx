@@ -1,10 +1,10 @@
+import { notFound } from "next/navigation";
 import { CompanyOverview } from "@/components/job-details/company-overview";
 import { JobDetailsContent } from "@/components/job-details/job-details-content";
 import { JobDetailsHeader } from "@/components/job-details/job-details-header";
 import { JobStats } from "@/components/job-details/job-stats";
 import { Navbar } from "@/components/shared/navbar";
-import { DUMMY_JOB_DETAILS } from "@/lib/dummy-job-details";
-import type { IJobDetails } from "@/lib/job-details-type";
+import { getSingleJob } from "@/lib/api/jobs";
 
 const JobDetailsPage = async ({
   params,
@@ -13,9 +13,8 @@ const JobDetailsPage = async ({
 }) => {
   const { id } = await params;
 
-  // TODO: replace with `const job = await getSingleJob(id)` once the API
-  // returns the job details fields.
-  const job: IJobDetails = { ...DUMMY_JOB_DETAILS, _id: id };
+  const job = await getSingleJob(id);
+  if (!job) notFound();
 
   return (
     <>

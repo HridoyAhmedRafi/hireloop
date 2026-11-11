@@ -333,12 +333,12 @@ const ManageJobs = async () => {
                           </DropdownMenuTrigger>
 
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                            // onClick={() => handleAction("View", job)}
-                            >
-                              <Eye />
-                              View
-                            </DropdownMenuItem>
+                            <Link href={`/browse-jobs/${job._id}`}>
+                              <DropdownMenuItem>
+                                <Eye />
+                                View
+                              </DropdownMenuItem>
+                            </Link>
                           </DropdownMenuContent>
                         </DropdownMenu>
                       </div>

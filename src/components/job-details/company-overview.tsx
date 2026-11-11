@@ -1,7 +1,11 @@
 import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { IJobDetails } from "@/lib/job-details-type";
-import { getCompanyInitials } from "@/lib/job-format";
+import {
+  formatJobLocation,
+  formatPostedDate,
+  getCompanyInitials,
+} from "@/lib/job-format";
 
 type CompanyOverviewProps = {
   job: IJobDetails;
@@ -19,8 +23,6 @@ function CompanyInfoRow({ label, value }: { label: string; value: string }) {
 }
 
 export function CompanyOverview({ job }: CompanyOverviewProps) {
-  const hasDetails = Boolean(job.companySize || job.industry);
-
   return (
     <aside className="self-start rounded-xl border border-border bg-card p-5 lg:sticky lg:top-6">
       <h2 className="text-base font-semibold">Company Overview</h2>
@@ -41,16 +43,17 @@ export function CompanyOverview({ job }: CompanyOverviewProps) {
         )}
       </div>
 
-      {hasDetails && (
-        <dl className="mt-5 space-y-3">
-          {job.companySize && (
-            <CompanyInfoRow label="Size" value={job.companySize} />
-          )}
-          {job.industry && (
-            <CompanyInfoRow label="Industry" value={job.industry} />
-          )}
-        </dl>
-      )}
+      <dl className="mt-5 space-y-3">
+        <CompanyInfoRow label="Location" value={formatJobLocation(job)} />
+        <CompanyInfoRow label="Posted" value={formatPostedDate(job.postedAt)} />
+
+        {job.companySize && (
+          <CompanyInfoRow label="Size" value={job.companySize} />
+        )}
+        {job.industry && (
+          <CompanyInfoRow label="Industry" value={job.industry} />
+        )}
+      </dl>
 
       {job.website && (
         <Button
