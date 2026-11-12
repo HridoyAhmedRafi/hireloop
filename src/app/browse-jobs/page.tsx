@@ -1,10 +1,10 @@
-import { getJobs } from "@/lib/api/jobs";
-import type { IJobPost } from "@/lib/job-type";
+import type { IJobPost } from "@/lib/types/job-type";
 import { Navbar } from "@/components/shared/navbar";
 import { JobCard } from "@/components/jobs/job-card";
 import { JobFilters, type FilterGroup } from "@/components/jobs/job-filters";
 import { JobSearchBar } from "@/components/jobs/job-search-bar";
 import { JobSort } from "@/components/jobs/job-sort";
+import { getJobs } from "@/lib/api/jobs";
 
 const JOB_TYPE_ORDER = ["Full-time", "Part-time", "Contract", "Internship"];
 

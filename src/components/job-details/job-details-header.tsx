@@ -1,6 +1,6 @@
 import { BadgeCheck } from "lucide-react";
-import type { IJobDetails } from "@/lib/job-details-type";
-import { getCompanyInitials } from "@/lib/job-format";
+import type { IJobDetails } from "@/lib/types/job-details-type";
+import { getCompanyInitials } from "@/lib/formate/job-format";
 import { JobDetailsActions } from "./job-details-actions";
 
 type JobDetailsHeaderProps = {

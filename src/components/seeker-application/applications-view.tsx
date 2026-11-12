@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { IApplicationRecord } from "@/lib/application-type";
+import type { IApplicationRecord } from "@/lib/types/application-type";
 import { ApplicationPagination } from "./application-pagination";
 import { ApplicationStats } from "./application-stats";
 import { ApplicationTable } from "./application-table";
@@ -22,14 +22,14 @@ export function ApplicationsView({ applications }: ApplicationsViewProps) {
   const [page, setPage] = useState(1);
 
   const visible = applications.filter((application) =>
-    tab === "archived" ? application.archived : !application.archived
+    tab === "archived" ? application.archived : !application.archived,
   );
 
   const pageCount = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
   const currentPage = Math.min(page, pageCount);
   const rows = visible.slice(
     (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE
+    currentPage * PAGE_SIZE,
   );
 
   const handleTabChange = (nextTab: ApplicationsTab) => {

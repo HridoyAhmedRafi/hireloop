@@ -1,5 +1,5 @@
 import { cn } from "cn";
-import type { IApplicationRecord } from "@/lib/application-type";
+import type { IApplicationRecord } from "@/lib/types/application-type";
 
 type ApplicationStatsProps = {
   applications: IApplicationRecord[];
@@ -8,13 +8,13 @@ type ApplicationStatsProps = {
 export function ApplicationStats({ applications }: ApplicationStatsProps) {
   const total = applications.length;
   const shortlisted = applications.filter(
-    (application) => application.status === "Shortlisted"
+    (application) => application.status === "Shortlisted",
   ).length;
   const interviews = applications.filter(
-    (application) => application.status === "Interview"
+    (application) => application.status === "Interview",
   ).length;
   const offered = applications.filter(
-    (application) => application.status === "Offered"
+    (application) => application.status === "Offered",
   ).length;
   const successRate = total === 0 ? 0 : Math.round((offered / total) * 100);
 
@@ -38,7 +38,7 @@ export function ApplicationStats({ applications }: ApplicationStatsProps) {
           <p
             className={cn(
               "mt-2 text-2xl font-semibold",
-              stat.highlight && "text-emerald-600 dark:text-emerald-400"
+              stat.highlight && "text-emerald-600 dark:text-emerald-400",
             )}
           >
             {stat.value}

@@ -2,12 +2,12 @@
 
 import { Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { IJobDetails } from "@/lib/job-details-type";
+import { IJobDetails } from "@/lib/types/job-details-type";
 import { useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { toast } from "../ui/toast";
 import { ApplyJob } from "@/lib/api/applications";
-import type { IApplication } from "@/lib/application-type";
+import type { IApplication } from "@/lib/types/application-type";
 
 type JobDetailsActionsProps = {
   job: IJobDetails;

@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { TableCell, TableRow } from "@/components/ui/table";
-import type { IApplicationRecord } from "@/lib/application-type";
-import { formatRelativeDate } from "@/lib/application-format";
-import { getCompanyInitials } from "@/lib/job-format";
+import type { IApplicationRecord } from "@/lib/types/application-type";
+import { formatRelativeDate } from "@/lib/formate/application-format";
+import { getCompanyInitials } from "@/lib/formate/job-format";
 import { ApplicationStatusBadge } from "./application-status-badge";
 
 type ApplicationRowProps = {

@@ -1,4 +1,4 @@
-import type { IJob } from "./job-type";
+import type { IJob } from "../types/job-type";
 
 const FREQUENCY_LABEL: Record<string, string> = {
   "per hour": "/ hr",
@@ -57,7 +57,9 @@ export const getCompanyInitials = (company: string) =>
 /** "United States (Remote)", without repeating "Remote" if it is already there. */
 export const formatJobLocation = (job: IJob) => {
   if (!job.remote) return job.location;
-  return /remote/i.test(job.location) ? job.location : `${job.location} (Remote)`;
+  return /remote/i.test(job.location)
+    ? job.location
+    : `${job.location} (Remote)`;
 };
 
 /** Splits a newline separated text field (responsibilities, requirements) into a list. */

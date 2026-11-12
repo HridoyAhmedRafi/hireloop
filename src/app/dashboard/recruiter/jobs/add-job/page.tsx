@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { IJob } from "@/lib/job-type";
+import { IJob } from "@/lib/types/job-type";
 import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import { AddJob } from "@/lib/api/jobs";

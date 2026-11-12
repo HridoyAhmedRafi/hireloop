@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { IApplicationRecord } from "@/lib/application-type";
+import type { IApplicationRecord } from "@/lib/types/application-type";
 import { ApplicationRow } from "./application-row";
 
 type ApplicationTableProps = {

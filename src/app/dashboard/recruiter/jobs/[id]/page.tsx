@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { IJob, IJobPost } from "@/lib/job-type";
+import { IJob, IJobPost } from "@/lib/types/job-type";
 import { useParams, useRouter } from "next/navigation";
 import { getSingleJob, updateJob } from "@/lib/api/jobs";
 import { useEffect, useState } from "react";

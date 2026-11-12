@@ -1,11 +1,11 @@
 import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { IJobDetails } from "@/lib/job-details-type";
+import type { IJobDetails } from "@/lib/types/job-details-type";
 import {
   formatJobLocation,
   formatPostedDate,
   getCompanyInitials,
-} from "@/lib/job-format";
+} from "@/lib/formate/job-format";
 
 type CompanyOverviewProps = {
   job: IJobDetails;

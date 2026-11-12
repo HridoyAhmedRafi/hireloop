@@ -1,12 +1,12 @@
 "use client";
 import { Sparkles, Wallet, Zap } from "lucide-react";
-import type { IJobPost } from "@/lib/job-type";
+import type { IJobPost } from "@/lib/types/job-type";
 import {
   formatCompensation,
   formatJobLocation,
   getCompanyInitials,
   isNewJob,
-} from "@/lib/job-format";
+} from "@/lib/formate/job-format";
 import { BookmarkButton } from "./bookmark-button";
 import { useRouter } from "next/navigation";
 

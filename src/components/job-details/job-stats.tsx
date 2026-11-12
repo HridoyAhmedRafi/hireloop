@@ -5,8 +5,11 @@ import {
   Wallet,
   type LucideIcon,
 } from "lucide-react";
-import type { IJobDetails } from "@/lib/job-details-type";
-import { formatCompensation, formatJobLocation } from "@/lib/job-format";
+import type { IJobDetails } from "@/lib/types/job-details-type";
+import {
+  formatCompensation,
+  formatJobLocation,
+} from "@/lib/formate/job-format";
 
 type JobStatsProps = {
   job: IJobDetails;

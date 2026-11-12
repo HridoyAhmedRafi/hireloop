@@ -1,7 +1,7 @@
-import type { IJobPost } from "../job-type";
+import type { IJobPost } from "../types/job-type";
 
 // mutation
-import { IJob } from "../job-type";
+import { IJob } from "../types/job-type";
 export const AddJob = async (data: IJob) => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/add-job`, {
     method: "POST",

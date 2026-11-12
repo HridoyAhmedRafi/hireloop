@@ -37,7 +37,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { IJob, IJobPost } from "@/lib/job-type";
+import type { IJob, IJobPost } from "@/lib/types/job-type";
 import { getJobs } from "@/lib/api/jobs";
 import { DeleteJob } from "../../_components/DeleteJob";
 

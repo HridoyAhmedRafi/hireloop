@@ -1,5 +1,5 @@
-import type { IJobDetails } from "@/lib/job-details-type";
-import { toLines } from "@/lib/job-format";
+import type { IJobDetails } from "@/lib/types/job-details-type";
+import { toLines } from "@/lib/formate/job-format";
 import { JobBenefits } from "./job-benefits";
 import { JobBulletList } from "./job-bullet-list";
 import { JobDetailsSection } from "./job-details-section";

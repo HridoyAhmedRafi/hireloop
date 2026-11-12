@@ -15,7 +15,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { IJobPost } from "@/lib/job-type";
+import { IJobPost } from "@/lib/types/job-type";
 import { useState } from "react";
 import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
