@@ -21,7 +21,7 @@ const buildFilterGroups = (jobs: IJobPost[]): FilterGroup[] => {
   const jobTypes = [
     ...JOB_TYPE_ORDER,
     ...Object.keys(jobTypeCounts).filter(
-      (type) => !JOB_TYPE_ORDER.includes(type)
+      (type) => !JOB_TYPE_ORDER.includes(type),
     ),
   ];
 

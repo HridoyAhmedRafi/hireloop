@@ -56,7 +56,7 @@ function SessionButton({ variant = "bar" }: { variant?: "bar" | "menu" }) {
       title: "Sign Out ",
       description: "Sign Out successfully!!",
     });
-    router.refresh();
+    router.push("/sign-in");
   };
 
   if (isPending) {
