@@ -34,3 +34,16 @@ export const getApplications = async (
   );
   return res.json();
 };
+
+// get applications count
+export const getApplicationsCount = async (
+  query = "",
+): Promise<{ count: number }> => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/applications/count?${query}`,
+    {
+      cache: "no-store",
+    },
+  );
+  return res.json();
+};

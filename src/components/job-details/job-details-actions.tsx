@@ -6,7 +6,7 @@ import { IJobDetails } from "@/lib/types/job-details-type";
 import { useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { toast } from "../ui/toast";
-import { ApplyJob } from "@/lib/api/applications";
+import { ApplyJob, getApplicationsCount } from "@/lib/api/applications";
 import type { IApplication } from "@/lib/types/application-type";
 
 type JobDetailsActionsProps = {
@@ -27,38 +27,44 @@ export function JobDetailsActions({ job }: JobDetailsActionsProps) {
       });
       return;
     } else if (user.role === "seeker") {
-      const application: IApplication = {
-        jobId: job._id,
-        jobTitle: job.title,
-        companyName: job.company,
-        userId: user.id,
-        email: user.email,
-        jobType: job.jobType,
-        remote: job.remote,
-        location: job.location,
-        minSalary: job.minSalary,
-        maxSalary: job.maxSalary,
-        frequency: job.frequency,
-        archived: false,
-      };
+      const countResult = await getApplicationsCount(`applicantId=${user.id}`);
+      if (countResult.count >= 10) {
+        router.push("/payment");
+        return;
+      } else {
+        const application: IApplication = {
+          jobId: job._id,
+          jobTitle: job.title,
+          companyName: job.company,
+          userId: user.id,
+          email: user.email,
+          jobType: job.jobType,
+          remote: job.remote,
+          location: job.location,
+          minSalary: job.minSalary,
+          maxSalary: job.maxSalary,
+          frequency: job.frequency,
+          archived: false,
+        };
 
-      try {
-        const res = await ApplyJob(application);
+        try {
+          const res = await ApplyJob(application);
 
-        if (!res.acknowledged) {
-          throw new Error("Application was not saved");
+          if (!res.acknowledged) {
+            throw new Error("Application was not saved");
+          }
+
+          toast.add({
+            title: "Applied",
+            description: "Applied successfully!",
+          });
+          router.push(`/browse-jobs`);
+        } catch {
+          toast.add({
+            title: "Something went wrong",
+            description: "Could not submit your application. Please try again.",
+          });
         }
-
-        toast.add({
-          title: "Applied",
-          description: "Applied successfully!",
-        });
-        router.push(`/browse-jobs`);
-      } catch {
-        toast.add({
-          title: "Something went wrong",
-          description: "Could not submit your application. Please try again.",
-        });
       }
     } else {
       toast.add({
