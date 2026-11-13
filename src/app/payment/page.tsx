@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   ArrowLeft,
   Check,
+  CircleAlert,
   CreditCard,
   Lock,
   ShieldCheck,
@@ -21,16 +22,14 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import {
-  INTERVAL_LABEL,
-  RECRUITER_PRO_PLAN,
+  HIRELOOP_PRO_PLAN,
   formatAmount,
-  getRenewalDate,
   getTotalDue,
-} from "@/lib/payment/plans";
+} from "@/lib/payment-type/plans";
 
 export const metadata: Metadata = {
   title: "Payment · hireloop",
-  description: "Complete your Recruiter Pro subscription payment.",
+  description: "Complete your HireLoop Pro one-time payment.",
 };
 
 const NEXT_STEPS = [
@@ -43,7 +42,7 @@ const NEXT_STEPS = [
     description: "You will be redirected to Stripe to enter your card details.",
   },
   {
-    title: "Unlock Recruiter Pro",
+    title: "Unlock HireLoop Pro",
     description: "Pro features are enabled on your dashboard right away.",
   },
 ];
@@ -59,11 +58,17 @@ function BillingRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-const PaymentPage = () => {
-  const plan = RECRUITER_PRO_PLAN;
+const PaymentPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ canceled?: string }>;
+}) => {
+  const { canceled } = await searchParams;
+  const wasCanceled = canceled === "1" || canceled === "true";
+
+  const plan = HIRELOOP_PRO_PLAN;
   const price = formatAmount(plan.amount, plan.currency);
   const totalDue = formatAmount(getTotalDue(plan), plan.currency);
-  const intervalLabel = INTERVAL_LABEL[plan.interval];
 
   return (
     <>
@@ -87,28 +92,42 @@ const PaymentPage = () => {
             Complete your payment
           </h1>
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-            You are one step away from unlocking {plan.name}. Review your order,
-            then continue to our secure Stripe checkout.
+            You are one step away from unlocking {plan.name}. This is a one-time
+            payment — review your order, then continue to our secure Stripe
+            checkout.
           </p>
         </header>
+
+        {wasCanceled && (
+          <div
+            role="status"
+            className="mt-6 flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-700 dark:text-amber-300"
+          >
+            <CircleAlert className="mt-0.5 size-4 shrink-0" />
+            <p>
+              Payment canceled — you have not been charged. You can try again
+              whenever you are ready.
+            </p>
+          </div>
+        )}
 
         <div className="mt-8 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div className="space-y-6">
             <Card>
               <CardHeader>
-                <div className="flex items-start justify-between gap-4 ">
+                <div className="flex items-start justify-between gap-4">
                   <div className="flex min-w-0 items-start gap-3">
                     <span
                       aria-hidden="true"
-                      className=" flex size-11 shrink-0 items-center justify-center rounded-xl border border-border bg-indigo-500/10 text-indigo-600 dark:text-indigo-300"
+                      className="flex size-11 shrink-0 items-center justify-center rounded-xl border border-border bg-indigo-500/10 text-indigo-600 dark:text-indigo-300"
                     >
                       <Sparkles className="size-5" />
                     </span>
                     <div className="min-w-0">
-                      <CardTitle className=" flex flex-wrap items-center gap-2">
+                      <CardTitle className="flex flex-wrap items-center gap-2">
                         {plan.name}
                         <span className="rounded-full bg-primary px-2 py-0.5 text-[11px] font-medium text-primary-foreground">
-                          Most popular
+                          One-time payment
                         </span>
                       </CardTitle>
                       <CardDescription className="mt-1">
@@ -121,9 +140,7 @@ const PaymentPage = () => {
                     <p className="text-xl font-semibold tracking-tight">
                       {price}
                     </p>
-                    <p className="text-xs text-muted-foreground">
-                      per {plan.interval}
-                    </p>
+                    <p className="text-xs text-muted-foreground">one-time</p>
                   </div>
                 </div>
               </CardHeader>
@@ -146,7 +163,7 @@ const PaymentPage = () => {
                 </ul>
 
                 <p className="text-xs text-muted-foreground">
-                  Billed {plan.interval}ly · Cancel anytime from your dashboard.
+                  One-time payment · No recurring charges.
                 </p>
               </CardContent>
             </Card>
@@ -161,14 +178,14 @@ const PaymentPage = () => {
               <CardContent>
                 <dl className="space-y-3">
                   <BillingRow label="Plan" value={plan.name} />
-                  <BillingRow label="Billing cycle" value={intervalLabel} />
+                  <BillingRow label="Billing type" value="One-time payment" />
                   <BillingRow
                     label="Payment method"
                     value="Card · entered on Stripe"
                   />
                   <BillingRow
-                    label="Renews on"
-                    value={getRenewalDate(plan.interval)}
+                    label="Access"
+                    value="Unlocked right after payment"
                   />
                 </dl>
               </CardContent>
@@ -203,7 +220,7 @@ const PaymentPage = () => {
               <CardHeader>
                 <CardTitle>Order summary</CardTitle>
                 <CardDescription>
-                  Charged today, then every {plan.interval}.
+                  One-time charge. No subscription.
                 </CardDescription>
               </CardHeader>
 
@@ -211,7 +228,7 @@ const PaymentPage = () => {
                 <dl className="space-y-2.5 text-sm">
                   <div className="flex items-center justify-between gap-4">
                     <dt className="text-muted-foreground">
-                      {plan.name} · {intervalLabel}
+                      {plan.name} · One-time
                     </dt>
                     <dd className="font-medium">{price}</dd>
                   </div>
@@ -236,7 +253,7 @@ const PaymentPage = () => {
                   </span>
                 </div>
 
-                <PayButton plan={plan} />
+                <PayButton />
 
                 <p className="flex items-start gap-1.5 text-xs text-muted-foreground">
                   <Lock className="mt-0.5 size-3.5 shrink-0" />

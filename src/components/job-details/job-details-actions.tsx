@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "../ui/toast";
 import { ApplyJob, getApplicationsCount } from "@/lib/api/applications";
 import type { IApplication } from "@/lib/types/application-type";
+import { getPremiumUser } from "@/lib/api/user";
 
 type JobDetailsActionsProps = {
   job: IJobDetails;
@@ -27,9 +28,15 @@ export function JobDetailsActions({ job }: JobDetailsActionsProps) {
       });
       return;
     } else if (user.role === "seeker") {
+      const premiumUser = await getPremiumUser(user.id);
+      console.log(premiumUser);
       const countResult = await getApplicationsCount(`applicantId=${user.id}`);
-      if (countResult.count >= 10) {
+      if (!premiumUser.premium && countResult.count >= 10) {
         router.push("/payment");
+        toast.add({
+          title: "Payment",
+          description: "To apply more buy subscription.",
+        });
         return;
       } else {
         const application: IApplication = {
