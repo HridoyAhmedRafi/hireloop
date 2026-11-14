@@ -1,7 +1,10 @@
-import React from "react";
+import { UsersView } from "@/components/admin-dashboard/users-view";
+import { getUsers } from "@/lib/api/admin-users";
 
-const AdminUserPage = () => {
-  return <div>admin user page</div>;
+const AdminUserPage = async () => {
+  const { users } = await getUsers();
+
+  return <UsersView users={users} />;
 };
 
 export default AdminUserPage;

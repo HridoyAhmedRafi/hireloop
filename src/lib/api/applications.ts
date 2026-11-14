@@ -1,4 +1,5 @@
 import type {
+  ApplicationStatus,
   IApplication,
   IApplicationRecord,
 } from "@/lib/types/application-type";
@@ -51,7 +52,7 @@ export const getApplicationsCount = async (
 //update applying status
 export const updateApplication = async (
   id: string,
-  data: { status: string },
+  data: { status: ApplicationStatus },
 ) => {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/applications/${id}`,
@@ -63,5 +64,10 @@ export const updateApplication = async (
       body: JSON.stringify(data),
     },
   );
+
+  if (!res.ok) {
+    throw new Error("Failed to update application status");
+  }
+
   return res.json();
 };

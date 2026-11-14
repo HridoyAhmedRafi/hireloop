@@ -30,15 +30,32 @@ export function ApplicationsView({
 
   const handleStatusChange = async (id: string, status: ApplicationStatus) => {
     const application = applications.find((item) => item._id === id);
+    if (!application || application.status === status) return;
 
-    const updateStatus = await updateApplication(id, { status });
-    if (updateStatus.modifiedCount > 0) {
-      setApplications((current) =>
-        current.map((item) => (item._id === id ? { ...item, status } : item)),
-      );
+    const previousStatus = application.status;
+
+    // Optimistic: update the badge and dropdown right away.
+    setApplications((current) =>
+      current.map((item) => (item._id === id ? { ...item, status } : item)),
+    );
+    try {
+      await updateApplication(id, { status });
+
       toast.add({
         title: "Status updated",
-        description: `${application?.email ?? "Applicant"} moved to ${STATUS_LABELS[status]}.`,
+        description: `${application.email} moved to ${STATUS_LABELS[status]}.`,
+      });
+    } catch {
+      // Revert if the request failed.
+      setApplications((current) =>
+        current.map((item) =>
+          item._id === id ? { ...item, status: previousStatus } : item,
+        ),
+      );
+
+      toast.add({
+        title: "Update failed",
+        description: "Could not update the status. Please try again.",
       });
     }
   };
