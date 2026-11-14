@@ -8,6 +8,8 @@ export type IJobPost = IJob & {
 };
 
 export type IJob = {
+  recruiterId: string;
+  recruiterEmail: string;
   title: string;
   company: string;
   category: string;

@@ -99,6 +99,8 @@ const UpdateJob = () => {
     const formData = new FormData(event.currentTarget);
 
     const job: IJob = {
+      recruiterId: singleJob.recruiterId,
+      recruiterEmail: singleJob.recruiterEmail,
       title: String(formData.get("title") ?? ""),
       company: String(formData.get("company") ?? ""),
       category: String(formData.get("category") ?? ""),

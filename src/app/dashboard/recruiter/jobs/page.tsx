@@ -40,6 +40,7 @@ import {
 import type { IJob, IJobPost } from "@/lib/types/job-type";
 import { DeleteJob } from "../../_components/DeleteJob";
 import { getJobs } from "@/lib/api/jobs";
+import { getServerSession } from "@/lib/core/get-server-session";
 
 // Figma palette (Manage Job Posts / 83484:1158)
 const FIGMA_THEME =
@@ -138,7 +139,10 @@ const formatRelative = (date: string) => {
 };
 
 const ManageJobs = async () => {
-  const jobs: IJobPost[] = await getJobs();
+  const session = await getServerSession();
+  const user = session?.user;
+
+  const jobs: IJobPost[] = await getJobs(`recruiterId=${user?.id}`);
 
   return (
     <div
@@ -266,10 +270,12 @@ const ManageJobs = async () => {
                     </TableCell>
 
                     <TableCell className="hidden px-4 py-4 lg:table-cell">
-                      <span className="flex items-center gap-1.5 text-[#c3c0ff]">
-                        <UsersRound className="size-4 shrink-0" />
-                        {job.applicants} Candidates
-                      </span>
+                      <Link href={`jobs/${job._id}/applications`}>
+                        <span className="flex items-center gap-1.5 text-[#c3c0ff]">
+                          <UsersRound className="size-4 shrink-0" />
+                          {job.applicants} Candidates
+                        </span>
+                      </Link>
                     </TableCell>
 
                     <TableCell className="hidden px-4 py-4 sm:table-cell">

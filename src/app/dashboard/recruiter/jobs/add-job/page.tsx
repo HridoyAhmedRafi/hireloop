@@ -1,7 +1,8 @@
 "use client";
 
-import { Building2, DollarSign, Globe, MapPin, Plus } from "lucide-react";
+import { Building2, DollarSign, Globe, Lock, MapPin, Plus } from "lucide-react";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,6 +27,7 @@ import { IJob } from "@/lib/types/job-type";
 import { toast } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import { AddJob } from "@/lib/api/jobs";
+import { useSession } from "@/lib/auth-client";
 
 const JOB_TYPES = ["Full-time", "Part-time", "Contract", "Internship"];
 
@@ -60,12 +62,17 @@ const fieldIconClass =
   "pointer-events-none absolute right-2.5 top-1/2 size-4 -translate-y-1/2 text-[#a0a0ab]";
 
 const AddJobPage = () => {
+  const { data: session } = useSession();
+  const user = session?.user;
+
   const router = useRouter();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
     const job: IJob = {
+      recruiterId: user?.id ?? "",
+      recruiterEmail: user?.email ?? "",
       title: String(formData.get("title") ?? ""),
       company: String(formData.get("company") ?? ""),
       category: String(formData.get("category") ?? ""),
@@ -334,6 +341,45 @@ const AddJobPage = () => {
                 className={textareaClass}
                 required
               />
+            </div>
+          </CardContent>
+
+          <CardContent>
+            <div className="rounded-xl border border-[#232327] bg-[#1e1e21] p-4">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="flex min-w-0 items-center gap-3">
+                  <Avatar size="lg" className="border border-[#232327]">
+                    {user?.image ? (
+                      <AvatarImage
+                        src={user.image}
+                        alt={user.name ?? "Recruiter"}
+                      />
+                    ) : null}
+                    <AvatarFallback className="bg-[#232327] text-sm font-semibold text-[#c3c0ff]">
+                      {user?.name?.[0]?.toUpperCase() ??
+                        user?.email?.[0]?.toUpperCase() ??
+                        "R"}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-medium tracking-wide text-[#a0a0ab] uppercase">
+                      Recruiter information
+                    </p>
+                    <p className="truncate text-sm font-medium text-[#f4f4f5]">
+                      {user?.name ?? "—"}
+                    </p>
+                    <p className="truncate text-xs text-[#a0a0ab]">
+                      {user?.email ?? "—"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <p className="mt-3 border-t border-[#232327] pt-3 text-xs text-[#a0a0ab]">
+                This job will be published under your recruiter account. Contact
+                an admin to update these details.
+              </p>
             </div>
           </CardContent>
         </Card>
