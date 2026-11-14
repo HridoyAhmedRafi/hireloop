@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, DollarSign, Globe, Lock, MapPin, Plus } from "lucide-react";
+import { Building2, DollarSign, Globe, MapPin, Plus } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";

@@ -81,6 +81,7 @@ export function JobDetailsActions({ job }: JobDetailsActionsProps) {
     }
   };
 
+  console.log("id", job._id);
   const handleBookmark = () => {
     // TODO: save this job to the user's bookmarks.
   };

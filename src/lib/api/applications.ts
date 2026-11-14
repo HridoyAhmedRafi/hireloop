@@ -47,3 +47,21 @@ export const getApplicationsCount = async (
   );
   return res.json();
 };
+
+//update applying status
+export const updateApplication = async (
+  id: string,
+  data: { status: string },
+) => {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/applications/${id}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    },
+  );
+  return res.json();
+};
