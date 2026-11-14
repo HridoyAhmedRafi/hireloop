@@ -28,10 +28,7 @@ export const HIRELOOP_PRO_PLAN: PaymentPlan = {
 };
 
 /** 2900 -> "$29.00" */
-export const formatAmount = (
-  amount: number,
-  currency: PaymentPlan["currency"] = "usd",
-) =>
+export const formatAmount = (amount: number, currency: string = "usd") =>
   new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
