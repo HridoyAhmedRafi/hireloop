@@ -31,7 +31,7 @@ export function JobDetailsActions({ job }: JobDetailsActionsProps) {
       const premiumUser = await getPremiumUser(user.id);
       console.log(premiumUser);
       const countResult = await getApplicationsCount(`applicantId=${user.id}`);
-      if (!premiumUser.premium && countResult.count >= 2) {
+      if (!premiumUser.premium && countResult.count >= 5) {
         router.push("/payment");
         toast.add({
           title: "Payment",
