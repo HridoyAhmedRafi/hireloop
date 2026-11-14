@@ -146,7 +146,7 @@ const ManageJobs = async () => {
 
   return (
     <div
-      className={`flex w-full flex-1 flex-col gap-6 bg-background p-4 md:p-8 ${FIGMA_THEME}`}
+      className={`  flex w-full flex-1 flex-col gap-6 bg-background p-4 md:p-8 ${FIGMA_THEME}`}
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
@@ -270,12 +270,10 @@ const ManageJobs = async () => {
                     </TableCell>
 
                     <TableCell className="hidden px-4 py-4 lg:table-cell">
-                      <Link href={`jobs/${job._id}/applications`}>
-                        <span className="flex items-center gap-1.5 text-[#c3c0ff]">
-                          <UsersRound className="size-4 shrink-0" />
-                          {job.applicants} Candidates
-                        </span>
-                      </Link>
+                      <span className="flex items-center gap-1.5 text-[#c3c0ff]">
+                        <UsersRound className="size-4 shrink-0" />
+                        {job.applicants} Candidates
+                      </span>
                     </TableCell>
 
                     <TableCell className="hidden px-4 py-4 sm:table-cell">
@@ -339,7 +337,9 @@ const ManageJobs = async () => {
                           </DropdownMenuTrigger>
 
                           <DropdownMenuContent align="end">
-                            <Link href={`/browse-jobs/${job._id}`}>
+                            <Link
+                              href={`/dashboard/recruiter/jobs/${job._id}/applications`}
+                            >
                               <DropdownMenuItem>
                                 <Eye />
                                 View
