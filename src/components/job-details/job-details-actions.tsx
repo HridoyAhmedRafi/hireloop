@@ -29,7 +29,7 @@ export function JobDetailsActions({ job }: JobDetailsActionsProps) {
       return;
     } else if (user.role === "seeker") {
       const premiumUser = await getPremiumUser(user.id);
-      console.log(premiumUser);
+
       const countResult = await getApplicationsCount(`applicantId=${user.id}`);
       if (!premiumUser.premium && countResult.count >= 5) {
         router.push("/payment");
