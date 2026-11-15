@@ -6,7 +6,6 @@ import {
   Briefcase,
   Eye,
   EyeOff,
-  ShieldCheck,
   UserPlus,
   UserRound,
 } from "lucide-react";
@@ -21,10 +20,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { authClient } from "@/lib/auth-client";
 import { cn } from "cn";
 import { useRouter } from "next/navigation";
 import { toast } from "@/components/ui/toast";
+import { signUpWithRole } from "@/lib/actions/signup";
 
 const ROLES = [
   {
@@ -36,11 +35,6 @@ const ROLES = [
     value: "recruiter",
     label: "Recruiter",
     icon: Briefcase,
-  },
-  {
-    value: "admin",
-    label: "Admin",
-    icon: ShieldCheck,
   },
 ] as const;
 
@@ -61,34 +55,33 @@ export default function SignUpPage() {
     const password = formData.get("password") as string;
 
     try {
-      const { data, error } = await authClient.signUp.email({
+      const result = await signUpWithRole({
         name,
         email,
         image,
         password,
         role,
       });
-      if (error) {
+
+      if (!result.ok) {
         toast.add({
-          title: "Error ",
-          description: `${error.message}`,
+          title: "Error",
+          description: result.message,
         });
-        // toast.error(error.message as string);
+        return;
       }
-      if (data) {
-        toast.add({
-          title: "Account created ",
-          description: "Account created successfully!",
-        });
-        router.push("/sign-in"); // Redirect to sign-in page after successful sign-up
-      }
+
+      toast.add({
+        title: "Account created ",
+        description: "Account created successfully!",
+      });
+      router.push("/sign-in"); // Redirect to sign-in page after successful sign-up
     } catch (error) {
       console.error("Something went wrong:", error);
       toast.add({
         title: "Error",
         description: "An error occurred while creating your account.",
       });
-      // toast.error("An error occurred while creating your account.");
     }
   };
 
@@ -116,12 +109,12 @@ export default function SignUpPage() {
                 I&apos;m signing up as
               </legend>
 
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 {ROLES.map(({ value, label, icon: Icon }) => (
                   <label
                     key={value}
                     className={cn(
-                      "flex cursor-pointer flex-col items-center gap-1 rounded-lg border p-3 text-center transition-colors",
+                      "flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border p-4 text-center transition-colors",
                       role === value
                         ? "border-primary bg-primary/10 ring-2 ring-primary"
                         : "border-border hover:bg-muted",
@@ -138,7 +131,7 @@ export default function SignUpPage() {
 
                     <Icon
                       className={cn(
-                        "size-5",
+                        "size-6",
                         role === value
                           ? "text-primary"
                           : "text-muted-foreground",

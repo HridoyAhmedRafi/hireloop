@@ -6,8 +6,6 @@ import { admin } from "better-auth/plugins";
 const client = new MongoClient(process.env.MONGODB_URI as string);
 const db = client.db("hireloop-db");
 
-const ROLES = ["seeker", "recruiter", "admin"] as const;
-
 export const auth = betterAuth({
   database: mongodbAdapter(db, {
     client,
@@ -16,34 +14,10 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: false,
   },
-  user: {
-    additionalFields: {
-      role: {
-        type: [...ROLES],
-        required: false,
-        defaultValue: "seeker",
-        input: true,
-        validator: {
-          input: {
-            "~standard": {
-              version: 1,
-              vendor: "hireloop",
-              validate(value) {
-                return ROLES.includes(value as (typeof ROLES)[number])
-                  ? { value }
-                  : {
-                      issues: [
-                        { message: "Role must be seeker, recruiter or admin" },
-                      ],
-                    };
-              },
-            },
-          },
-        },
-      },
-    },
-  },
-  plugins: [admin()],
+  // The admin() plugin owns `user.role` and marks it input: false, so the role
+  // can never come from the sign-up request body. It is assigned server-side
+  // in src/lib/actions/signup.ts right after the account is created.
+  plugins: [admin({ defaultRole: "seeker", adminRoles: ["admin"] })],
 
   socialProviders: {
     google: {
