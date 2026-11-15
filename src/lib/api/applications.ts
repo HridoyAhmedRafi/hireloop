@@ -1,8 +1,11 @@
+"use server";
+
 import type {
   ApplicationStatus,
   IApplication,
   IApplicationRecord,
 } from "@/lib/types/application-type";
+import { authFetch } from "../core/get-server-session";
 
 export const ApplyJob = async (data: IApplication) => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/applications`, {
@@ -27,12 +30,8 @@ export const ApplyJob = async (data: IApplication) => {
 export const getApplications = async (
   query = "",
 ): Promise<IApplicationRecord[]> => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/applications?${query}`,
-    {
-      cache: "no-store",
-    },
-  );
+  const api = `${process.env.NEXT_PUBLIC_BASE_URL}/applications?${query}`;
+  const res = await authFetch(api);
   return res.json();
 };
 

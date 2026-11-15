@@ -146,7 +146,7 @@ const ManageJobs = async () => {
 
   return (
     <div
-      className={`  flex w-full flex-1 flex-col gap-6 bg-background p-4 md:p-8 ${FIGMA_THEME}`}
+      className={` flex w-full flex-1 flex-col gap-6 bg-background p-4 md:p-8 ${FIGMA_THEME}`}
     >
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>

@@ -18,13 +18,14 @@ export const requiredRole = async (role: string) => {
 
 export const getToken = async () => {
   const session = await getServerSession();
-  if (!session || session.session?.token) {
+  if (!session || !session.session?.token) {
     redirect("/unauthorized");
   }
+  return session?.session?.token;
 };
 
 export const authFetch = async (api: string) => {
-  const token = getToken();
+  const token = await getToken();
   const res = fetch(api, {
     headers: {
       authorization: `Bearer ${token}`,

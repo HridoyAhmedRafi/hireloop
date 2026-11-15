@@ -62,7 +62,7 @@ export function ApplicationsView({
 
   return (
     <div
-      className={`flex w-full flex-1 flex-col gap-6 bg-background p-4 md:p-8 ${FIGMA_THEME}`}
+      className={` flex w-full flex-1 flex-col gap-6 bg-background p-4 md:p-8 ${FIGMA_THEME}`}
     >
       <ApplicationsHeader job={job} applicantCount={applications.length} />
 

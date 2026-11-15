@@ -17,10 +17,6 @@ const ApplicationsPage = async ({
 
   const applications = await getApplications(`jobId=${id}`);
 
-  // const jobApplications = applications.filter(
-  //   (application) => application.jobId === id,
-  // );
-
   return <ApplicationsView job={job} applications={applications} />;
 };
 
