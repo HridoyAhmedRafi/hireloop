@@ -1,15 +1,13 @@
+"use server";
+
+import { protectedMutation } from "../core/token-apis";
 import type { IJobPost } from "../types/job-type";
 
 // mutation
 import { IJob } from "../types/job-type";
 export const AddJob = async (data: IJob) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/add-job`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
+  const api = `${process.env.NEXT_PUBLIC_BASE_URL}/add-job`;
+  const res = await protectedMutation(api, "POST", data);
   return res.json();
 };
 // deleting data

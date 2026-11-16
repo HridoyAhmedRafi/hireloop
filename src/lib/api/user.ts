@@ -1,3 +1,7 @@
+"use server";
+
+import { protectedMutation } from "../core/token-apis";
+
 export const getPremiumUser = async (id: string) => {
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL}/users/${id}/premium`,
@@ -10,20 +14,10 @@ export const updateUserRole = async (
   userId: string,
   role: "seeker" | "recruiter" | "admin",
 ) => {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/users/${userId}/role`,
-    {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ role }),
-    },
-  );
-
+  const api = `${process.env.NEXT_PUBLIC_BASE_URL}/users/${userId}/role`;
+  const res = await protectedMutation(api, "PATCH", { role });
   if (!res.ok) {
     throw new Error("Failed to update user role");
   }
-
   return res.json();
 };
