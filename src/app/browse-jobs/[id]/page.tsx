@@ -5,6 +5,7 @@ import { JobDetailsHeader } from "@/components/job-details/job-details-header";
 import { JobStats } from "@/components/job-details/job-stats";
 import { Navbar } from "@/components/shared/navbar";
 import { getSingleJob } from "@/lib/api/jobs";
+import type { IJobPost } from "@/lib/types/job-type";
 
 const JobDetailsPage = async ({
   params,
@@ -13,7 +14,16 @@ const JobDetailsPage = async ({
 }) => {
   const { id } = await params;
 
-  const job = await getSingleJob(id);
+  let job: IJobPost | null = null;
+
+  try {
+    job = await getSingleJob(id);
+  } catch {
+    // The recruiter may have deleted this job, in which case the API replies
+    // with an empty body that cannot be parsed. Treat it as "not found".
+    job = null;
+  }
+
   if (!job) notFound();
 
   return (
