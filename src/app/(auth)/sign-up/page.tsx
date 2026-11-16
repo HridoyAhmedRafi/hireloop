@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Briefcase,
   Eye,
   EyeOff,
+  ImagePlus,
   UserPlus,
   UserRound,
 } from "lucide-react";
 
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -44,23 +46,69 @@ export default function SignUpPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState<Role>("seeker");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  // Release the object URL when the component unmounts.
+  useEffect(() => {
+    return () => {
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
+    };
+  }, [imagePreview]);
+
+  const handleImageChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = event.target.files?.[0] ?? null;
+    setImageFile(file);
+
+    setImagePreview((current) => {
+      if (current) URL.revokeObjectURL(current);
+      return file ? URL.createObjectURL(file) : null;
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    if (!imageFile) {
+      toast.add({
+        title: "Profile image required",
+        description: "Please choose a profile image before signing up.",
+      });
+      return;
+    }
+
     const formData = new FormData(e.currentTarget);
     const name = formData.get("name") as string;
     const email = formData.get("email") as string;
-    const image = formData.get("image") as string;
     const password = formData.get("password") as string;
 
     try {
+      const body = new FormData();
+      body.append("image", imageFile);
+
+      const uploadRes = await fetch(
+        `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
+        { method: "POST", body },
+      );
+      const upload = await uploadRes.json();
+      console.log("ImgBB status:", uploadRes.status); // <-- add
+      console.log("ImgBB response:", upload); // <-- add
+      console.log("Image URL:", upload?.data?.url);
+
+      if (!uploadRes.ok || !upload?.data?.url) {
+        throw new Error(
+          upload?.error?.message ?? "Could not upload the profile image.",
+        );
+      }
+
       const result = await signUpWithRole({
         name,
         email,
-        image,
         password,
         role,
+        image: upload.data.url,
       });
 
       if (!result.ok) {
@@ -80,7 +128,10 @@ export default function SignUpPage() {
       console.error("Something went wrong:", error);
       toast.add({
         title: "Error",
-        description: "An error occurred while creating your account.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "An error occurred while creating your account.",
       });
     }
   };
@@ -166,14 +217,45 @@ export default function SignUpPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="image">Profile image URL</Label>
-              <Input
+              <Label htmlFor="image">Profile image</Label>
+
+              <input
                 id="image"
                 name="image"
-                type="url"
-                placeholder="https://example.com/image.jpg"
-                required
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="sr-only"
               />
+
+              <label
+                htmlFor="image"
+                className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-border p-3 transition-colors hover:bg-muted"
+              >
+                <Avatar className="size-12">
+                  {imagePreview ? (
+                    <AvatarImage
+                      src={imagePreview}
+                      alt="Selected profile image"
+                    />
+                  ) : null}
+
+                  <AvatarFallback>
+                    <ImagePlus className="size-5 text-muted-foreground" />
+                  </AvatarFallback>
+                </Avatar>
+
+                <div className="min-w-0">
+                  <p className="truncate text-sm font-medium">
+                    {imageFile ? imageFile.name : "Choose an image"}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {imageFile
+                      ? `${Math.max(1, Math.round(imageFile.size / 1024))} KB`
+                      : "PNG or JPG, up to 5 MB"}
+                  </p>
+                </div>
+              </label>
             </div>
 
             <div className="space-y-2">
