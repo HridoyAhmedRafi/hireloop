@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { stripe } from "@/lib/stripe";
-import { getServerSession } from "@/lib/core/get-server-session";
+import { getServerSession } from "@/lib/core/token-apis";
 
 export async function POST() {
   const userSession = await getServerSession();

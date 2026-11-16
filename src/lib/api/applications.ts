@@ -5,25 +5,12 @@ import type {
   IApplication,
   IApplicationRecord,
 } from "@/lib/types/application-type";
-import { authFetch } from "../core/get-server-session";
+import { authFetch, protectedMutation } from "../core/token-apis";
 
 export const ApplyJob = async (data: IApplication) => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/applications`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to submit application");
-  }
-
-  return (await res.json()) as {
-    acknowledged: boolean;
-    insertedId: string;
-  };
+  const api = `${process.env.NEXT_PUBLIC_BASE_URL}/applications`;
+  const res = await protectedMutation(api, "POST", data);
+  return res.json();
 };
 
 // getting

@@ -40,7 +40,7 @@ import {
 import type { IJob, IJobPost } from "@/lib/types/job-type";
 import { DeleteJob } from "../../_components/DeleteJob";
 import { getJobs } from "@/lib/api/jobs";
-import { getServerSession } from "@/lib/core/get-server-session";
+import { getServerSession } from "@/lib/core/token-apis";
 
 // Figma palette (Manage Job Posts / 83484:1158)
 const FIGMA_THEME =

@@ -1,4 +1,4 @@
-import { requiredRole } from "@/lib/core/get-server-session";
+import { requiredRole } from "@/lib/core/token-apis";
 import React from "react";
 
 const RecruiterDashboardLayout = async ({

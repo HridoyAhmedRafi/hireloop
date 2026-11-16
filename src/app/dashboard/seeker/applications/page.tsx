@@ -5,13 +5,11 @@ import { headers } from "next/headers";
 
 const ApplicationsPage = async () => {
   const session = await auth.api.getSession({
-    headers: await headers(), // you need to pass the headers object.
+    headers: await headers(),
   });
   const id = session?.user?.id;
-  // TODO: replace with the fetched applications once the API exposes GET /applications.
   const applications = await getApplications(`applicantId=${id}`);
 
-  // const applications: IApplicationRecord[] = DUMMY_APPLICATIONS;
   return <ApplicationsView applications={applications} />;
 };
 

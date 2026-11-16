@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { checkoutVarify } from "@/lib/api/payments";
-import { getServerSession } from "@/lib/core/get-server-session";
+import { getServerSession } from "@/lib/core/token-apis";
 import { HIRELOOP_PRO_PLAN, formatAmount } from "@/lib/payment-type/plans";
 import { stripe } from "@/lib/stripe";
 
